@@ -10,15 +10,15 @@
   "engines": {
     "node": ">=12.0.0"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": [
       "eslint --fix"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   },  
   "scripts": {
     "start": "pm2 start ecosystem.config.json --no-daemon",
@@ -85,6 +85,8 @@
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.2.1",
+    "@commitlint/config-conventional": "^19.1.0",
     "coveralls": "^3.0.7",
     "eslint": "^7.0.0",
     "eslint-config-airbnb-base": "^14.0.0",
@@ -94,7 +96,7 @@
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-security": "^1.4.0",
     "faker": "^5.1.0",
-    "husky": "7.0.4",
+    "husky": "^9.0.11",
     "jest": "^26.0.1",
     "lint-staged": "^11.0.0",
     "node-mocks-http": "^1.8.0",
