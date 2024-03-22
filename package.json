@@ -16,10 +16,10 @@
     }
   },
   "lint-staged": {
-    "*.ts": [
-      "npm run lint",
-      "npm run format",
-      "git add ."
+    "src/**/*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "git add .",
+      "git commit -m"
     ]
   },
   "scripts": {
