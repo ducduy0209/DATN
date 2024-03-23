@@ -6,10 +6,12 @@ services:
     image: node-app
     environment:
       - MONGODB_URL=mongodb://mongodb:27017/library-system
+      - REDIS_URL=redis://redis:6379
     ports:
       - '3000:3000'
     depends_on:
       - mongodb
+      - redis
     volumes:
       - .:/usr/src/node-app
     networks:
@@ -24,8 +26,18 @@ services:
     networks:
       - node-network
 
+  redis:
+    image: redis:latest
+    ports:
+      - '6379:6379'
+    volumes:
+      - redisdata:/data
+    networks:
+      - node-network
+
 volumes:
   dbdata:
+  redisdata:
 
 networks:
   node-network:
