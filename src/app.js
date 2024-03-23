@@ -5,12 +5,14 @@ const mongoSanitize = require('express-mongo-sanitize');
 const compression = require('compression');
 const cors = require('cors');
 const passport = require('passport');
+const path = require('path');
 const httpStatus = require('http-status');
 const config = require('./config/config');
 const morgan = require('./config/morgan');
 const { jwtStrategy } = require('./config/passport');
 const { authLimiter } = require('./middlewares/rateLimiter');
 const routes = require('./routes/v1');
+const viewRoutes = require('./routes/view');
 const { errorConverter, errorHandler } = require('./middlewares/error');
 const ApiError = require('./utils/ApiError');
 
@@ -45,12 +47,17 @@ app.options('*', cors());
 app.use(passport.initialize());
 passport.use('jwt', jwtStrategy);
 
+// set up views
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+
 // limit repeated failed requests to auth endpoints
 if (config.env === 'production') {
   app.use('/v1/auth', authLimiter);
 }
 
 // v1 api routes
+app.use('/', viewRoutes);
 app.use('/v1', routes);
 
 // send back a 404 error for any unknown api request

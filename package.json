@@ -18,8 +18,7 @@
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": [
       "eslint --fix",
-      "git add .",
-      "git commit -m"
+      "git add ."
     ]
   },
   "scripts": {
@@ -80,6 +79,7 @@
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "pm2": "^5.1.0",
+    "pug": "^3.0.2",
     "swagger-jsdoc": "^6.0.8",
     "swagger-ui-express": "^4.1.6",
     "validator": "^13.0.0",
