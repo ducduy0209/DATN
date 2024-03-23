@@ -181,6 +181,7 @@ src\
  |--services\       # Business logic (service layer)
  |--utils\          # Utility classes and functions
  |--validations\    # Request data validation schemas
+ |--views\          # User Interface
  |--app.js          # Express app
  |--index.js        # App entry point
 ```
