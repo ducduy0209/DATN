@@ -55,9 +55,9 @@ app.set('views', path.join(__dirname, 'views'));
 if (config.env === 'production') {
   app.use('/v1/auth', authLimiter);
 }
-
-// v1 api routes
+// user interface routes (view routes)
 app.use('/', viewRoutes);
+// v1 api routes
 app.use('/v1', routes);
 
 // send back a 404 error for any unknown api request
