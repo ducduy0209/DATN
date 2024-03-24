@@ -8,6 +8,9 @@ const envVarsSchema = Joi.object()
   .keys({
     NODE_ENV: Joi.string().valid('production', 'development', 'test').required(),
     PORT: Joi.number().default(3000),
+    RECEIVER_ID: Joi.string().required().description('Id of person receiving moneny'),
+    ELASTICSEARCH_URL: Joi.string().required().description('Elasticsearch url'),
+    RABBITMQ_URL: Joi.string().required().description('RabbitMQ url'),
     REDIS_HOST: Joi.string().required().description('Redis host'),
     REDIS_PORT: Joi.string().required().description('Redis port'),
     MONGODB_URL: Joi.string().required().description('Mongo DB url'),
@@ -41,6 +44,9 @@ module.exports = {
     host: envVars.REDIS_HOST,
     port: envVars.REDIS_PORT,
   },
+  receiver_id: envVars.RECEIVER_ID,
+  elasticsearch: envVars.ELASTICSEARCH_URL,
+  rabbitmq: envVars.RABBITMQ_URL,
   mongoose: {
     url: envVars.MONGODB_URL + (envVars.NODE_ENV === 'test' ? '-test' : ''),
     options: {
