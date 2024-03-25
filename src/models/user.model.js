@@ -10,6 +10,7 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+      index: true,
     },
     email: {
       type: String,
@@ -22,6 +23,7 @@ const userSchema = mongoose.Schema(
           throw new Error('Invalid email');
         }
       },
+      index: true,
     },
     password: {
       type: String,
