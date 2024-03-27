@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const shortid = require('shortid');
 const { toJSON, paginate } = require('./plugins');
 const { roles } = require('../config/roles');
 
@@ -84,6 +85,14 @@ userSchema.methods.isPasswordMatch = async function (password) {
   const user = this;
   return bcrypt.compare(password, user.password);
 };
+
+userSchema.pre('save', async function (next) {
+  const user = this;
+  if (!user.my_refer_code) {
+    user.my_refer_code = shortid.generate();
+  }
+  next();
+});
 
 userSchema.pre('save', async function (next) {
   const user = this;
