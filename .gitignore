@@ -2,7 +2,7 @@
 node_modules
 
 # Public folder
-./src/public
+src/public/img/*
 
 # yarn error logs
 yarn-error.log
