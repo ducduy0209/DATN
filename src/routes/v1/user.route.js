@@ -1,10 +1,25 @@
 const express = require('express');
-const auth = require('../../middlewares/auth');
-const validate = require('../../middlewares/validate');
+const auth = require('../../middlewares/auth.middleware');
+const { getMe } = require('../../middlewares/user.middleware');
+const { uploadUserPhoto, resizeUserPhoto } = require('../../middlewares/uploadImage.middleware');
+const validate = require('../../middlewares/validate.middleware');
 const userValidation = require('../../validations/user.validation');
 const userController = require('../../controllers/user.controller');
 
 const router = express.Router();
+
+router.get('/me', auth(), getMe, userController.getUser);
+router.patch('/update-my-password', auth(), validate(userValidation.updateMyPassword), userController.updateMyPassword);
+router.patch(
+  '/update-me',
+  auth(),
+  getMe,
+  validate(userValidation.updateMe),
+  uploadUserPhoto,
+  resizeUserPhoto,
+  userController.updateUser
+);
+router.delete('/delete-me', auth(), userController.deleteMe);
 
 router
   .route('/')

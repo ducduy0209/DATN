@@ -38,6 +38,10 @@ const userSchema = mongoose.Schema(
       },
       private: true, // used by the toJSON plugin
     },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
     role: {
       type: String,
       enum: roles,
@@ -47,14 +51,16 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    balance: {
-      type: Number,
-      default: 0,
+    image: {
+      type: String,
+      default: 'default.jpg',
     },
-    favorite_books: {
-      type: Array,
-      default: [],
-    },
+    favorite_books: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Book',
+      },
+    ],
   },
   {
     timestamps: true,

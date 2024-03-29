@@ -8,6 +8,8 @@ COPY package.json yarn.lock ./
 
 USER node
 
+RUN npm install --os=darwin --cpu=arm64 sharp
+
 RUN yarn install --pure-lockfile
 
 COPY --chown=node:node . .

@@ -1,6 +1,9 @@
 # Dependencies
 node_modules
 
+# Public folder
+./src/public
+
 # yarn error logs
 yarn-error.log
 

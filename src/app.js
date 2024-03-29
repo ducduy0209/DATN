@@ -10,10 +10,10 @@ const httpStatus = require('http-status');
 const config = require('./config/config');
 const morgan = require('./config/morgan');
 const { jwtStrategy } = require('./config/passport');
-const { authLimiter } = require('./middlewares/rateLimiter');
+const { authLimiter } = require('./middlewares/rateLimiter.middleware');
 const routes = require('./routes/v1');
 const viewRoutes = require('./routes/view');
-const { errorConverter, errorHandler } = require('./middlewares/error');
+const { errorConverter, errorHandler } = require('./middlewares/error.middleware');
 const ApiError = require('./utils/ApiError');
 
 const app = express();
