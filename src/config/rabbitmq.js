@@ -1,7 +1,7 @@
 // rabbitChannel.js
 const amqp = require('amqplib');
-const config = require('./config/config');
-const logger = require('./config/logger');
+const config = require('./config');
+const logger = require('./logger');
 
 let channelInstance = null;
 
