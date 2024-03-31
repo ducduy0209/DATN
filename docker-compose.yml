@@ -7,14 +7,12 @@ services:
     environment:
       - MONGODB_URL=mongodb://mongodb:27017/library-system
       - REDIS_URL=redis://redis:6379
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
       - RABBITMQ_URL=amqp://rabbitmq:5672
     ports:
       - '3000:3000'
     depends_on:
       - mongodb
       - redis
-      - elasticsearch
       - rabbitmq
     volumes:
       - .:/usr/src/node-app
