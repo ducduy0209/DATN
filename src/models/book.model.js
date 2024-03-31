@@ -19,7 +19,7 @@ const bookSchema = new mongoose.Schema(
       required: true,
       trim: true,
       unique: true,
-      index: true,
+      index: 'text',
     },
     slug: {
       type: String,
@@ -29,7 +29,7 @@ const bookSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      index: true,
+      index: 'text',
     },
     published_date: {
       type: Date,
