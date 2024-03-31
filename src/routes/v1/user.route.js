@@ -24,7 +24,7 @@ router.delete('/delete-me', auth(), userController.deleteMe);
 router
   .route('/')
   .post(auth('admin'), validate(userValidation.createUser), userController.createUser)
-  .get(auth('admin'), validate(userValidation.admin), userController.getUsers);
+  .get(auth('admin'), validate(userValidation.getUsers), userController.getUsers);
 
 router
   .route('/:userId')

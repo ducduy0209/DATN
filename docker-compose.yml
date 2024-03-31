@@ -39,28 +39,6 @@ services:
     networks:
       - node-network
 
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
-    environment:
-      - discovery.type=single-node
-    ports:
-      - '9200:9200'
-    volumes:
-      - esdata:/usr/share/elasticsearch/data
-    networks:
-      - node-network
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.9.3
-    environment:
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
-    ports:
-      - '5601:5601'
-    depends_on:
-      - elasticsearch
-    networks:
-      - node-network
-
   rabbitmq:
     image: "rabbitmq:3-management"
     environment:

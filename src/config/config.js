@@ -51,7 +51,6 @@ module.exports = {
     client_secret: envVars.PAYPAL_CLIENT_SECRET,
   },
   receiver_id: envVars.RECEIVER_ID,
-  elasticsearch: envVars.ELASTICSEARCH_URL,
   rabbitmq: envVars.RABBITMQ_URL,
   mongoose: {
     url: envVars.MONGODB_URL + (envVars.NODE_ENV === 'test' ? '-test' : ''),
