@@ -1,7 +1,6 @@
 const express = require('express');
 const auth = require('../../middlewares/auth.middleware');
-const { getMe } = require('../../middlewares/user.middleware');
-const { uploadUserPhoto, resizeUserPhoto } = require('../../middlewares/uploadImage.middleware');
+const { getMe, uploadUserPhoto, resizeUserPhoto } = require('../../middlewares/user.middleware');
 const validate = require('../../middlewares/validate.middleware');
 const userValidation = require('../../validations/user.validation');
 const userController = require('../../controllers/user.controller');

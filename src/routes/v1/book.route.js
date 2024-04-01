@@ -1,23 +1,36 @@
 const express = require('express');
-// const paypal = require('../../config/paypal');
-// const logger = require('../../config/logger');
 const auth = require('../../middlewares/auth.middleware');
 const validate = require('../../middlewares/validate.middleware');
 const bookValidation = require('../../validations/book.validation');
 const bookController = require('../../controllers/book.controller');
+const { uploadFiles, resizeBookPhoto, saveBookPDF } = require('../../middlewares/book.middleware');
 
 const router = express.Router();
 
 router
   .route('/')
-  // .post(auth('admin'), validate(bookValidation.createUser), bookController.createUser)
+  .post(
+    auth('admin'),
+    uploadFiles,
+    resizeBookPhoto,
+    saveBookPDF,
+    validate(bookValidation.createBook),
+    bookController.createBook
+  )
   .get(validate(bookValidation.getBooks), bookController.getBooks);
 
-// router
-//   .route('/:bookId')
-//   .get(auth('admin'), validate(bookValidation.getUser), bookController.getUser)
-//   .patch(auth('admin'), validate(bookValidation.updateUser), bookController.updateUser)
-//   .delete(auth('admin'), validate(bookValidation.deleteUser), bookController.deleteUser);
+router
+  .route('/:bookId')
+  .get(auth(), validate(bookValidation.getBook), bookController.getBook)
+  .patch(
+    auth('admin'),
+    uploadFiles,
+    resizeBookPhoto,
+    saveBookPDF,
+    validate(bookValidation.updateBook),
+    bookController.updateBook
+  )
+  .delete(auth('admin'), validate(bookValidation.deleteBook), bookController.deleteBook);
 /*
 router.get('/pay', (req, res) => {
   const createPaymentJson = {

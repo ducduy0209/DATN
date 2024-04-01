@@ -1,29 +1,16 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
 
-const priceSchema = new mongoose.Schema({
-  duration: {
-    type: String,
-    required: true,
-  },
-  price: {
-    type: Number,
-    required: true,
-  },
-});
-
 const bookSchema = new mongoose.Schema(
   {
     title: {
       type: String,
       required: true,
       trim: true,
-      unique: true,
       index: 'text',
     },
     slug: {
       type: String,
-      required: true,
     },
     author: {
       type: String,
@@ -53,10 +40,6 @@ const bookSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    available_copies: {
-      type: Number,
-      default: 0,
-    },
     amount_borrowed: {
       type: Number,
       default: 0,
@@ -73,7 +56,18 @@ const bookSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    prices: [priceSchema],
+    prices: [
+      {
+        duration: {
+          type: String,
+          required: true,
+        },
+        price: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );
@@ -81,9 +75,17 @@ const bookSchema = new mongoose.Schema(
 bookSchema.plugin(toJSON);
 bookSchema.plugin(paginate);
 
-bookSchema.pre('save', (next) => {
-  if (this.title) this.slug = this.title.toLowerCase().split(' ').join('-');
+bookSchema.statics.isISBNTaken = async function (isbn) {
+  const book = await this.findOne({ isbn });
+  return !!book;
+};
 
+bookSchema.pre('save', function (next) {
+  this.slug = this.title
+    .replace(/[^\w\s]/gi, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .toLowerCase();
   next();
 });
 

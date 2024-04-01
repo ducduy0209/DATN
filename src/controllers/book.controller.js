@@ -1,6 +1,6 @@
 const httpStatus = require('http-status');
 const pick = require('../utils/pick');
-// const ApiError = require('../utils/ApiError');
+const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { bookService } = require('../services');
 
@@ -11,14 +11,14 @@ const configFilter = (filter) => {
     adjustedFilter.$text = { $search: search.trim() };
   }
   if (genre) {
-    adjustedFilter[genre] = genre;
+    adjustedFilter.genre = genre;
   }
 
-  if (+fromPrice !== 0 && +toPrice !== 0) {
+  if (+fromPrice !== 0 || +toPrice !== 0) {
     adjustedFilter.prices = {
       $elemMatch: {
         duration: '1 month',
-        price: { $gt: +fromPrice, $lt: +toPrice },
+        price: { $gte: +fromPrice, $lte: +toPrice },
       },
     };
   }
@@ -31,12 +31,50 @@ const getBooks = catchAsync(async (req, res) => {
   const filter = configFilter(filterOriginal);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await bookService.queryBooks(filter, options);
-  res.status(httpStatus.CREATED).json({
+  res.status(httpStatus.OK).json({
     status: 'success',
     data: { result },
   });
 });
 
+const createBook = catchAsync(async (req, res) => {
+  const book = await bookService.createBook(req, req.body);
+  res.status(httpStatus.CREATED).json({
+    status: 'success',
+    data: { book },
+  });
+});
+
+const getBook = catchAsync(async (req, res) => {
+  const book = await bookService.getBookById(req.params.bookId);
+  if (!book) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
+  }
+  res.status(httpStatus.OK).json({
+    status: 'success',
+    data: { book },
+  });
+});
+
+const updateBook = catchAsync(async (req, res) => {
+  const data = await bookService.updateUserById(req, req.params.bookId, req.body);
+  res.status(httpStatus.OK).json({
+    status: 'success',
+    data: { data },
+  });
+});
+
+const deleteBook = catchAsync(async (req, res) => {
+  await bookService.deleteBookById(req.params.bookId);
+  res.status(httpStatus.NO_CONTENT).json({
+    status: 'success',
+  });
+});
+
 module.exports = {
   getBooks,
+  createBook,
+  getBook,
+  deleteBook,
+  updateBook,
 };
