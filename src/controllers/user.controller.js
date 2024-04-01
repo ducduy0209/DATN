@@ -34,7 +34,7 @@ const getUser = catchAsync(async (req, res) => {
 });
 
 const updateUser = catchAsync(async (req, res) => {
-  const data = await userService.updateUserById(req, req.params.userId, req.body);
+  const data = await userService.updateUserById(req.params.userId, req.body);
   res.status(httpStatus.OK).json({
     status: 'success',
     data: { data },

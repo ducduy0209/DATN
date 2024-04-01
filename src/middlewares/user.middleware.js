@@ -32,6 +32,7 @@ const resizeUserPhoto = catchAsync(async (req, res, next) => {
   const fullPath = path.join(__dirname, '../', 'public', 'img', 'users', req.file.filename);
   await sharp(req.file.buffer).resize(500, 500).toFormat('jpeg').jpeg({ quality: 92 }).toFile(fullPath);
 
+  req.body.image = req.file.filename;
   next();
 });
 

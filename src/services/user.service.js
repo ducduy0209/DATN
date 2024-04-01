@@ -61,7 +61,7 @@ const filterObj = (obj, ...allowedFields) => {
  * @param {Object} updateBody
  * @returns {Promise<User>}
  */
-const updateUserById = async (req, userId, updateBody) => {
+const updateUserById = async (userId, updateBody) => {
   const user = await getUserById(userId);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
@@ -71,11 +71,8 @@ const updateUserById = async (req, userId, updateBody) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
 
-  const filteredBody = filterObj(req.body, 'name', 'email');
+  const filteredBody = filterObj(updateBody, 'name', 'email');
 
-  if (req.file) {
-    filteredBody.image = req.file.filename;
-  }
   Object.assign(user, filteredBody);
   await user.save();
   return user;

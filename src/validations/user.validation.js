@@ -56,6 +56,7 @@ const updateMe = {
   body: Joi.object().keys({
     name: Joi.string(),
     email: Joi.string().email(),
+    image: Joi.string(),
   }),
 };
 
