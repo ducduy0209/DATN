@@ -55,10 +55,31 @@ const deleteBook = {
   }),
 };
 
+const createCheckoutBook = {
+  params: Joi.object().keys({
+    bookId: Joi.string().custom(objectId).required(),
+  }),
+  query: Joi.object().keys({
+    duration: Joi.string(),
+  }),
+};
+
+const confirmCheckoutBook = {
+  query: Joi.object().keys({
+    paymentId: Joi.string().required(),
+    token: Joi.string().required(),
+    PayerID: Joi.string().required(),
+    bookId: Joi.string().custom(objectId).required(),
+    duration: Joi.string().required(),
+  }),
+};
+
 module.exports = {
   getBooks,
   createBook,
   getBook,
   deleteBook,
   updateBook,
+  createCheckoutBook,
+  confirmCheckoutBook,
 };

@@ -1,7 +1,7 @@
 const httpStatus = require('http-status');
 const { Book } = require('../models');
-// const paypal = require('../../config/paypal');
-// const logger = require('../../config/logger');
+const paypal = require('../config/paypal');
+const logger = require('../config/logger');
 const ApiError = require('../utils/ApiError');
 
 /**
@@ -75,10 +75,94 @@ const deleteBookById = async (id) => {
   return book;
 };
 
+/**
+ * Create a checkout book with the given bookId and duration.
+ *
+ * @param {Object} res - The response object
+ * @param {string} bookId - The ID of the book
+ * @param {number} duration - The duration of the book rental
+ * @return {Promise<void>} A promise that resolves with the checkout process
+ */
+const createCheckoutBook = async (res, bookId, duration) => {
+  const book = await getBookById(bookId);
+  if (!book) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
+  }
+  const { price } = book.prices.find((item) => item.duration === duration);
+  const createPaymentJson = {
+    intent: 'sale',
+    payer: {
+      payment_method: 'paypal',
+    },
+    redirect_urls: {
+      return_url: 'http://localhost:3000/v1/books/payment-success',
+      cancel_url: 'http://localhost:3000/v1/books/payment-cancel',
+    },
+    transactions: [
+      {
+        item_list: {
+          items: [
+            {
+              name: book.title,
+              sku: 'ebook',
+              price: `${price.toFixed(2)}`,
+              currency: 'USD',
+              quantity: 1,
+            },
+          ],
+        },
+        amount: {
+          currency: 'USD',
+          total: `${price.toFixed(2)}`,
+        },
+        description: 'Make payment to experience extremely interesting and interesting books. Thank you!',
+      },
+    ],
+  };
+
+  paypal.payment.create(createPaymentJson, function (error, payment) {
+    if (error) {
+      logger.error(error);
+      res.status(500).send({ error: error.toString() });
+    } else {
+      for (let i = 0; i < payment.links.length; i += 1) {
+        if (payment.links[i].rel === 'approval_url') {
+          res.redirect(payment.links[i].href);
+        }
+      }
+    }
+  });
+};
+
+/**
+ * Executes a PayPal payment for book checkout.
+ *
+ * @param {string} paymentId - The ID of the PayPal payment.
+ * @param {string} PayerID - The ID of the Payer.
+ * @return {Promise<void>} - A promise that resolves when the payment is executed successfully or rejects with an error if there is any.
+ */
+const confirmCheckoutBook = async (paymentId, PayerID) => {
+  const executePaymentJson = {
+    payer_id: PayerID,
+  };
+
+  paypal.payment.execute(paymentId, executePaymentJson, function (error, payment) {
+    if (error) {
+      logger.error(error.response);
+      throw error;
+    } else if (payment.state === 'approved') {
+      // console.log(JSON.stringify(payment));
+      // Cập nhật số dư cho người dùng ở đây
+    }
+  });
+};
+
 module.exports = {
   queryBooks,
   createBook,
   getBookById,
   deleteBookById,
   updateUserById,
+  createCheckoutBook,
+  confirmCheckoutBook,
 };

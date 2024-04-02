@@ -71,10 +71,23 @@ const deleteBook = catchAsync(async (req, res) => {
   });
 });
 
+const createCheckoutBook = (req, res) => {
+  bookService.createCheckoutBook(res, req.params.bookId, req.query.duration);
+};
+
+const confirmCheckoutBook = catchAsync(async (req, res) => {
+  const { paymentId, PayerID } = req.query;
+  await bookService.confirmCheckoutBook(paymentId, PayerID);
+
+  res.status(httpStatus.OK).redirect('/');
+});
+
 module.exports = {
   getBooks,
   createBook,
   getBook,
   deleteBook,
   updateBook,
+  createCheckoutBook,
+  confirmCheckoutBook,
 };

@@ -8,7 +8,6 @@ const envVarsSchema = Joi.object()
   .keys({
     NODE_ENV: Joi.string().valid('production', 'development', 'test').required(),
     PORT: Joi.number().default(3000),
-    RECEIVER_ID: Joi.string().required().description('Id of person receiving moneny'),
     RABBITMQ_URL: Joi.string().required().description('RabbitMQ url'),
     REDIS_HOST: Joi.string().required().description('Redis host'),
     REDIS_PORT: Joi.string().required().description('Redis port'),
@@ -49,7 +48,6 @@ module.exports = {
     client_id: envVars.PAYPAL_CLIENT_ID,
     client_secret: envVars.PAYPAL_CLIENT_SECRET,
   },
-  receiver_id: envVars.RECEIVER_ID,
   rabbitmq: envVars.RABBITMQ_URL,
   mongoose: {
     url: envVars.MONGODB_URL + (envVars.NODE_ENV === 'test' ? '-test' : ''),
