@@ -71,6 +71,7 @@ const confirmCheckoutBook = {
     PayerID: Joi.string().required(),
     bookId: Joi.string().custom(objectId).required(),
     duration: Joi.string().required(),
+    price: Joi.number(),
   }),
 };
 

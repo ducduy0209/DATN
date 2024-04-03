@@ -3,6 +3,7 @@ const { Book } = require('../models');
 const paypal = require('../config/paypal');
 const logger = require('../config/logger');
 const ApiError = require('../utils/ApiError');
+const { createRecord } = require('./borrow_record.service');
 
 /**
  * Query for users
@@ -88,14 +89,18 @@ const createCheckoutBook = async (res, bookId, duration) => {
   if (!book) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
   }
-  const { price } = book.prices.find((item) => item.duration === duration);
+
+  const formatedDuration = duration.split('-').join(' ');
+  const { price } = book.prices.find((item) => item.duration === formatedDuration);
   const createPaymentJson = {
     intent: 'sale',
     payer: {
       payment_method: 'paypal',
     },
     redirect_urls: {
-      return_url: 'http://localhost:3000/v1/books/payment-success',
+      return_url: `http://localhost:3000/v1/books/payment-success?bookId=${bookId}&duration=${duration}&price=${price.toFixed(
+        2
+      )}`,
       cancel_url: 'http://localhost:3000/v1/books/payment-cancel',
     },
     transactions: [
@@ -105,7 +110,7 @@ const createCheckoutBook = async (res, bookId, duration) => {
             {
               name: book.title,
               sku: 'ebook',
-              price: `${price.toFixed(2)}`,
+              price: price.toFixed(2),
               currency: 'USD',
               quantity: 1,
             },
@@ -113,7 +118,7 @@ const createCheckoutBook = async (res, bookId, duration) => {
         },
         amount: {
           currency: 'USD',
-          total: `${price.toFixed(2)}`,
+          total: price.toFixed(2),
         },
         description: 'Make payment to experience extremely interesting and interesting books. Thank you!',
       },
@@ -141,18 +146,22 @@ const createCheckoutBook = async (res, bookId, duration) => {
  * @param {string} PayerID - The ID of the Payer.
  * @return {Promise<void>} - A promise that resolves when the payment is executed successfully or rejects with an error if there is any.
  */
-const confirmCheckoutBook = async (paymentId, PayerID) => {
+const confirmCheckoutBook = async (paymentId, PayerID, duration, bookId, price, userId) => {
   const executePaymentJson = {
     payer_id: PayerID,
   };
 
-  paypal.payment.execute(paymentId, executePaymentJson, function (error, payment) {
+  paypal.payment.execute(paymentId, executePaymentJson, async function (error, payment) {
     if (error) {
       logger.error(error.response);
       throw error;
     } else if (payment.state === 'approved') {
-      // console.log(JSON.stringify(payment));
-      // Cập nhật số dư cho người dùng ở đây
+      await createRecord({
+        book_id: bookId,
+        user_id: userId,
+        price,
+        duration,
+      });
     }
   });
 };

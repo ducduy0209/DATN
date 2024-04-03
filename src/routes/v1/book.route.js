@@ -3,12 +3,15 @@ const auth = require('../../middlewares/auth.middleware');
 const validate = require('../../middlewares/validate.middleware');
 const bookValidation = require('../../validations/book.validation');
 const bookController = require('../../controllers/book.controller');
+const borrowRecordRoute = require('./borrow_record.route');
 const { uploadFiles, resizeBookPhoto, saveBookPDF } = require('../../middlewares/book.middleware');
 
 const router = express.Router();
 
-router.get('/pay/:bookId', auth(), validate(bookValidation.createCheckoutBook), bookController.createCheckoutBook);
-router.get('/payment-success', auth(), validate(bookValidation.confirmCheckoutBook), bookController.confirmCheckoutBook);
+router.use('/:book_id/records', auth('admin'), borrowRecordRoute);
+
+router.get('/pay/:bookId', validate(bookValidation.createCheckoutBook), bookController.createCheckoutBook);
+router.get('/payment-success', validate(bookValidation.confirmCheckoutBook), bookController.confirmCheckoutBook);
 
 // Note: This will be replaced with a real payment gateway
 router.get('/payment-cancel', (req, res) => res.send('Thanh toán bị hủy'));
