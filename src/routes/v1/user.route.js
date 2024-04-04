@@ -4,8 +4,11 @@ const { getMe, uploadUserPhoto, resizeUserPhoto } = require('../../middlewares/u
 const validate = require('../../middlewares/validate.middleware');
 const userValidation = require('../../validations/user.validation');
 const userController = require('../../controllers/user.controller');
+const borrowRecordRoute = require('./borrow_record.route');
 
 const router = express.Router();
+
+router.use('/:user_id/records', auth(), borrowRecordRoute);
 
 router.get('/me', auth(), getMe, userController.getUser);
 router.patch('/update-my-password', auth(), validate(userValidation.updateMyPassword), userController.updateMyPassword);
