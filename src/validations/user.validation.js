@@ -60,6 +60,12 @@ const updateMe = {
   }),
 };
 
+const likeBook = {
+  body: Joi.object().keys({
+    book_id: Joi.string().custom(objectId).required(),
+  }),
+};
+
 module.exports = {
   createUser,
   getUsers,
@@ -68,4 +74,5 @@ module.exports = {
   deleteUser,
   updateMyPassword,
   updateMe,
+  likeBook,
 };

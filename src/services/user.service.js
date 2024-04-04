@@ -126,6 +126,30 @@ const updateMyPasswordById = async (userId, updateBody) => {
   return user;
 };
 
+const likeBook = async (userId, bookId) => {
+  const count = await User.count({
+    _id: userId,
+    favorite_books: { $elemMatch: { $eq: bookId } },
+  });
+
+  if (count > 0) {
+    await User.updateOne(
+      { _id: userId },
+      {
+        $pull: { favorite_books: bookId },
+      }
+    );
+    return 'The book has been removed from your favorites';
+  }
+  await User.updateOne(
+    { _id: userId },
+    {
+      $push: { favorite_books: bookId },
+    }
+  );
+  return 'The book has been added to your favorites';
+};
+
 module.exports = {
   createUser,
   queryUsers,
@@ -135,4 +159,5 @@ module.exports = {
   deleteUserById,
   deactivateUserById,
   updateMyPasswordById,
+  likeBook,
 };

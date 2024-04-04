@@ -108,6 +108,15 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+userSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'favorite_books',
+    select: 'title slug cover_image rating amount_borrowed author',
+  });
+
+  next();
+});
+
 /**
  * @typedef User
  */

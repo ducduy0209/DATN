@@ -10,6 +10,8 @@ const router = express.Router();
 
 router.use('/:user_id/records', auth(), borrowRecordRoute);
 
+router.patch('/like-book', auth(), validate(userValidation.likeBook), userController.likeBook);
+
 router.get('/me', auth(), getMe, userController.getUser);
 router.patch('/update-my-password', auth(), validate(userValidation.updateMyPassword), userController.updateMyPassword);
 router.patch(

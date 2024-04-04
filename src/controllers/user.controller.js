@@ -65,6 +65,15 @@ const updateMyPassword = catchAsync(async (req, res) => {
   });
 });
 
+const likeBook = catchAsync(async (req, res) => {
+  const message = await userService.likeBook(req.user._id, req.body.book_id);
+
+  res.status(httpStatus.OK).json({
+    status: 'success',
+    message,
+  });
+});
+
 module.exports = {
   createUser,
   getUsers,
@@ -73,4 +82,5 @@ module.exports = {
   deleteUser,
   deleteMe,
   updateMyPassword,
+  likeBook,
 };
