@@ -10,8 +10,8 @@ const router = express.Router();
 
 router.use('/:book_id/records', auth('admin'), borrowRecordRoute);
 
-router.get('/pay/:bookId', validate(bookValidation.createCheckoutBook), bookController.createCheckoutBook);
-router.get('/payment-success', validate(bookValidation.confirmCheckoutBook), bookController.confirmCheckoutBook);
+router.get('/pay/:bookId', auth(), validate(bookValidation.createCheckoutBook), bookController.createCheckoutBook);
+router.get('/payment-success', auth(), validate(bookValidation.confirmCheckoutBook), bookController.confirmCheckoutBook);
 
 // Note: This will be replaced with a real payment gateway
 router.get('/payment-cancel', (req, res) => res.send('Thanh toán bị hủy'));

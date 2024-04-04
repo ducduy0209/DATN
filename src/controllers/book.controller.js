@@ -77,7 +77,7 @@ const createCheckoutBook = (req, res) => {
 
 const confirmCheckoutBook = catchAsync(async (req, res) => {
   const { paymentId, PayerID, duration, bookId, price } = req.query;
-  await bookService.confirmCheckoutBook(paymentId, PayerID, duration, bookId, price, '65feb58c3cb1eaa1eed971af');
+  await bookService.confirmCheckoutBook(paymentId, PayerID, duration, bookId, price, req.user._id || req.user.id);
 
   // Todo: Redirect to success page
   res.status(httpStatus.OK).redirect('/');
