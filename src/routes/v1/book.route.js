@@ -1,8 +1,8 @@
 const express = require('express');
 const auth = require('../../middlewares/auth.middleware');
 const validate = require('../../middlewares/validate.middleware');
-const bookValidation = require('../../validations/book.validation');
-const bookController = require('../../controllers/book.controller');
+const { bookValidation } = require('../../validations');
+const { bookController } = require('../../controllers');
 const borrowRecordRoute = require('./borrow_record.route');
 const { uploadFiles, resizeBookPhoto, saveBookPDF } = require('../../middlewares/book.middleware');
 
