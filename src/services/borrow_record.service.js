@@ -12,6 +12,14 @@ const { BorrowRecord } = require('../models');
 const getAllRecords = (filter, option) => {
   return BorrowRecord.paginate(filter, option);
 };
+/**
+ * Creates a new record based on the provided record body. If a record with the same user_id, book_id,
+ * and a due_date in the future already exists, it updates the duration and returns the updated record.
+ * Otherwise, it creates a new record and returns it.
+ *
+ * @param {Object} recordBody - The data for the new record.
+ * @return {Promise<Object>} The created or updated record.
+ */
 const createRecord = async (recordBody) => {
   const newData = { ...recordBody };
   if (newData.duration.includes('-')) {
@@ -33,6 +41,12 @@ const createRecord = async (recordBody) => {
   return BorrowRecord.create(newData);
 };
 
+/**
+ * Get a record by its ID.
+ *
+ * @param {string} id - The ID of the record to retrieve.
+ * @return {Promise} A Promise that resolves to the record found by ID.
+ */
 const getRecordById = async (id) => {
   return BorrowRecord.findById(id);
 };

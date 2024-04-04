@@ -97,7 +97,6 @@ const deleteUserById = async (userId) => {
  * @param {String} userId
  * @returns {Promise<User>}
  */
-
 const deactivateUserById = async (userId) => {
   const user = await getUserById(userId);
   if (!user) {
@@ -114,7 +113,6 @@ const deactivateUserById = async (userId) => {
  * @param {String} userId
  * @returns {Promise<User>}
  */
-
 const updateMyPasswordById = async (userId, updateBody) => {
   const { currentPassword, newPassword } = updateBody;
   const user = await getUserById(userId);
