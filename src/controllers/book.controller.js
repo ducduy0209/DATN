@@ -50,6 +50,8 @@ const getBook = catchAsync(async (req, res) => {
   if (!book) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
   }
+  book.access_times += 1;
+  await book.save();
   res.status(httpStatus.OK).json({
     status: 'success',
     data: { book },

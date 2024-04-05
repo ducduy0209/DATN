@@ -161,6 +161,7 @@ const confirmCheckoutBook = async (paymentId, PayerID, duration, bookId, price, 
         user_id: userId,
         price,
         duration,
+        payBy: 'paypal',
       });
     }
   });
