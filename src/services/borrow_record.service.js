@@ -1,6 +1,7 @@
-// const httpStatus = require('http-status');
+const httpStatus = require('http-status');
 const { BorrowRecord } = require('../models');
-// const ApiError = require('../utils/ApiError');
+const { Book } = require('../models');
+const ApiError = require('../utils/ApiError');
 
 /**
  * Get all records based on the provided filter and options.
@@ -12,33 +13,28 @@ const { BorrowRecord } = require('../models');
 const getAllRecords = (filter, option) => {
   return BorrowRecord.paginate(filter, option);
 };
-/**
- * Creates a new record based on the provided record body. If a record with the same user_id, book_id,
- * and a due_date in the future already exists, it updates the duration and returns the updated record.
- * Otherwise, it creates a new record and returns it.
- *
- * @param {Object} recordBody - The data for the new record.
- * @return {Promise<Object>} The created or updated record.
- */
 const createRecord = async (recordBody) => {
-  const newData = { ...recordBody };
-  if (newData.duration.includes('-')) {
-    newData.duration = newData.duration.split('-').join(' ');
+  const book = await Book.findById(recordBody.book_id);
+  if (!book) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
   }
-  const record = await BorrowRecord.findOne({
-    user_id: newData.user_id,
-    book_id: newData.book_id,
+
+  let record = await BorrowRecord.findOne({
+    user_id: recordBody.user_id,
+    book_id: recordBody.book_id,
     due_date: { $gt: new Date() },
   });
 
   if (record) {
-    record.duration = newData.duration;
+    record.duration = recordBody.duration;
     await record.save();
-
-    return record;
+  } else {
+    record = await BorrowRecord.create(recordBody);
   }
 
-  return BorrowRecord.create(newData);
+  book.amount_borrowed += 1;
+  await book.save();
+  return record;
 };
 
 /**

@@ -77,50 +77,56 @@ const deleteBookById = async (id) => {
 };
 
 /**
- * Create a checkout book with the given bookId and duration.
+ * Creates a checkout for a list of books with their corresponding durations.
  *
- * @param {Object} res - The response object
- * @param {string} bookId - The ID of the book
- * @param {number} duration - The duration of the book rental
- * @return {Promise<void>} A promise that resolves with the checkout process
+ * @param {object} res - The response object to send back the result
+ * @param {array} booksDetails - An array of objects containing bookId and duration
+ * @return {void}
  */
-const createCheckoutBook = async (res, bookId, duration) => {
-  const book = await getBookById(bookId);
-  if (!book) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
-  }
+const createCheckoutBooks = async (res, booksDetails) => {
+  let totalAmount = 0;
+  const items = await Promise.all(
+    booksDetails.map(async ({ bookId, duration }) => {
+      const book = await getBookById(bookId);
+      if (!book) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
+      }
 
-  const formatedDuration = duration.split('-').join(' ');
-  const { price } = book.prices.find((item) => item.duration === formatedDuration);
+      const { price } = book.prices.find((item) => item.duration === duration);
+      if (!price) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Price for specified duration not found');
+      }
+
+      totalAmount += price;
+      return {
+        name: book.title,
+        sku: `${bookId}-${duration}`,
+        price: price.toFixed(2),
+        currency: 'USD',
+        quantity: 1,
+      };
+    })
+  );
+
   const createPaymentJson = {
     intent: 'sale',
     payer: {
       payment_method: 'paypal',
     },
     redirect_urls: {
-      return_url: `http://localhost:3000/v1/books/payment-success?bookId=${bookId}&duration=${duration}&price=${price.toFixed(
-        2
-      )}`,
+      return_url: 'http://localhost:3000/v1/books/payment-success',
       cancel_url: 'http://localhost:3000/v1/books/payment-cancel',
     },
     transactions: [
       {
         item_list: {
-          items: [
-            {
-              name: book.title,
-              sku: 'ebook',
-              price: price.toFixed(2),
-              currency: 'USD',
-              quantity: 1,
-            },
-          ],
+          items,
         },
         amount: {
           currency: 'USD',
-          total: price.toFixed(2),
+          total: totalAmount.toFixed(2),
         },
-        description: 'Make payment to experience extremely interesting and interesting books. Thank you!',
+        description: 'Make payment to experience extremely interesting and valuable books. Thank you!',
       },
     ],
   };
@@ -133,8 +139,10 @@ const createCheckoutBook = async (res, bookId, duration) => {
       for (let i = 0; i < payment.links.length; i += 1) {
         if (payment.links[i].rel === 'approval_url') {
           res.redirect(payment.links[i].href);
+          return;
         }
       }
+      res.status(500).send({ error: 'No approval URL found' });
     }
   });
 };
@@ -146,7 +154,7 @@ const createCheckoutBook = async (res, bookId, duration) => {
  * @param {string} PayerID - The ID of the Payer.
  * @return {Promise<void>} - A promise that resolves when the payment is executed successfully or rejects with an error if there is any.
  */
-const confirmCheckoutBook = async (paymentId, PayerID, duration, bookId, price, userId) => {
+const confirmCheckoutBooks = async (paymentId, PayerID, userId) => {
   const executePaymentJson = {
     payer_id: PayerID,
   };
@@ -156,13 +164,18 @@ const confirmCheckoutBook = async (paymentId, PayerID, duration, bookId, price, 
       logger.error(error.response);
       throw error;
     } else if (payment.state === 'approved') {
-      await createRecord({
-        book_id: bookId,
-        user_id: userId,
-        price,
-        duration,
-        payBy: 'paypal',
+      const promises = payment.transactions[0].item_list.items.map((book) => {
+        const splitSku = book.sku.split('-');
+        return createRecord({
+          book_id: splitSku[0],
+          user_id: userId,
+          price: book.price,
+          duration: splitSku[1],
+          payBy: 'paypal',
+        });
       });
+
+      await Promise.all(promises);
     }
   });
 };
@@ -173,6 +186,6 @@ module.exports = {
   getBookById,
   deleteBookById,
   updateUserById,
-  createCheckoutBook,
-  confirmCheckoutBook,
+  createCheckoutBooks,
+  confirmCheckoutBooks,
 };

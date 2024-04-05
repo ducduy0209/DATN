@@ -73,13 +73,14 @@ const deleteBook = catchAsync(async (req, res) => {
   });
 });
 
-const createCheckoutBook = (req, res) => {
-  bookService.createCheckoutBook(res, req.params.bookId, req.query.duration);
+const createCheckoutBooks = (req, res) => {
+  const { books } = req.body;
+  bookService.createCheckoutBooks(res, books);
 };
 
-const confirmCheckoutBook = catchAsync(async (req, res) => {
-  const { paymentId, PayerID, duration, bookId, price } = req.query;
-  await bookService.confirmCheckoutBook(paymentId, PayerID, duration, bookId, price, req.user._id || req.user.id);
+const confirmCheckoutBooks = catchAsync(async (req, res) => {
+  const { paymentId, PayerID } = req.query;
+  await bookService.confirmCheckoutBooks(paymentId, PayerID, req.user._id || req.user.id);
 
   // Todo: Redirect to success page
   res.status(httpStatus.OK).redirect('/');
@@ -91,6 +92,6 @@ module.exports = {
   getBook,
   deleteBook,
   updateBook,
-  createCheckoutBook,
-  confirmCheckoutBook,
+  createCheckoutBooks,
+  confirmCheckoutBooks,
 };

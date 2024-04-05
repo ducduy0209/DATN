@@ -56,11 +56,8 @@ const deleteBook = {
 };
 
 const createCheckoutBook = {
-  params: Joi.object().keys({
-    bookId: Joi.string().custom(objectId).required(),
-  }),
-  query: Joi.object().keys({
-    duration: Joi.string(),
+  body: Joi.object().keys({
+    books: Joi.array().required(),
   }),
 };
 
@@ -69,9 +66,6 @@ const confirmCheckoutBook = {
     paymentId: Joi.string().required(),
     token: Joi.string().required(),
     PayerID: Joi.string().required(),
-    bookId: Joi.string().custom(objectId).required(),
-    duration: Joi.string().required(),
-    price: Joi.number(),
   }),
 };
 
