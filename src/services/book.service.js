@@ -1,4 +1,7 @@
 const httpStatus = require('http-status');
+const { PDFDocument } = require('pdf-lib');
+const fs = require('fs');
+const path = require('path');
 const { Book } = require('../models');
 const paypal = require('../config/paypal');
 const logger = require('../config/logger');
@@ -180,6 +183,47 @@ const confirmCheckoutBooks = async (paymentId, PayerID, userId) => {
   });
 };
 
+const getPreviewBook = async (bookId) => {
+  const book = await getBookById(bookId);
+  if (!book) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
+  }
+  const originalPdfPath = path.join(__dirname, '../', 'assets', `${book.digital_content}`);
+  // eslint-disable-next-line security/detect-non-literal-fs-filename
+  const originalPdfBytes = fs.readFileSync(originalPdfPath);
+  const pdfDoc = await PDFDocument.load(originalPdfBytes);
+
+  const newPdfDoc = await PDFDocument.create();
+  const pageCount = Math.min(3, pdfDoc.getPageCount());
+
+  for (let i = 0; i < pageCount; i += 1) {
+    // eslint-disable-next-line no-await-in-loop
+    const [copiedPage] = await newPdfDoc.copyPages(pdfDoc, [i]);
+    newPdfDoc.addPage(copiedPage);
+  }
+
+  const pdfBytes = await newPdfDoc.save();
+  return pdfBytes;
+};
+
+/**
+ * Asynchronously reads a book by its ID, and returns a readable stream of the book's content.
+ *
+ * @param {string} bookId - The ID of the book to be read.
+ * @return {ReadableStream} A readable stream of the book's content.
+ */
+const readBook = async (bookId) => {
+  const book = await getBookById(bookId);
+  if (!book) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
+  }
+  const originalPdfPath = path.join(__dirname, '../', 'assets', `${book.digital_content}`);
+  // eslint-disable-next-line security/detect-non-literal-fs-filename
+  const stream = fs.createReadStream(originalPdfPath);
+
+  return stream;
+};
+
 module.exports = {
   queryBooks,
   createBook,
@@ -188,4 +232,6 @@ module.exports = {
   updateUserById,
   createCheckoutBooks,
   confirmCheckoutBooks,
+  getPreviewBook,
+  readBook,
 };

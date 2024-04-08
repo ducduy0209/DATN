@@ -4,6 +4,7 @@ const shortid = require('shortid');
 const fs = require('fs');
 const sharp = require('sharp');
 const catchAsync = require('../utils/catchAsync');
+const { getTransactionRecord } = require('../services/borrow_record.service');
 
 const multerStorage = multer.memoryStorage();
 
@@ -39,9 +40,9 @@ const resizeBookPhoto = catchAsync(async (req, res, next) => {
 const saveBookPDF = catchAsync(async (req, res, next) => {
   if (req.files.digital_content) {
     const file = req.files.digital_content[0];
-    file.filename = `user-${req.user.id}-${Date.now()}.pdf`;
+    file.filename = `books-${shortid.generate()}-${Date.now()}.pdf`;
 
-    const fullPath = path.join(__dirname, '../', 'public', 'docs', file.filename);
+    const fullPath = path.join(__dirname, '../', 'assets', file.filename);
 
     // eslint-disable-next-line security/detect-non-literal-fs-filename
     fs.writeFileSync(fullPath, file.buffer);
@@ -51,8 +52,18 @@ const saveBookPDF = catchAsync(async (req, res, next) => {
   next();
 });
 
+const checkAccessRightBook = catchAsync(async (req, res, next) => {
+  const transaction = await getTransactionRecord(req.params.book_id, req.user._id);
+
+  const accessStatus = transaction ? `${transaction.due_date ? 'view' : 'download'}` : 'denied';
+
+  req.access_book = { status: accessStatus };
+  next();
+});
+
 module.exports = {
   uploadFiles,
   resizeBookPhoto,
   saveBookPDF,
+  checkAccessRightBook,
 };

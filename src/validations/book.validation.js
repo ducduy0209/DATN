@@ -69,6 +69,12 @@ const confirmCheckoutBook = {
   }),
 };
 
+const readBook = {
+  params: Joi.object().keys({
+    book_id: Joi.string().custom(objectId).required(),
+  }),
+};
+
 module.exports = {
   getBooks,
   createBook,
@@ -77,4 +83,5 @@ module.exports = {
   updateBook,
   createCheckoutBook,
   confirmCheckoutBook,
+  readBook,
 };

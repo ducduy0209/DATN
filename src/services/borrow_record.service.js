@@ -46,8 +46,26 @@ const createRecord = async (recordBody) => {
 const getRecordById = async (id) => {
   return BorrowRecord.findById(id);
 };
+
+/**
+ * Retrieves a transaction record for a specific book and user.
+ *
+ * @param {string} bookId - The ID of the book
+ * @param {string} userId - The ID of the user
+ * @return {object} The transaction record
+ */
+const getTransactionRecord = async (bookId, userId) => {
+  const transaction = await BorrowRecord.findOne({
+    book_id: bookId,
+    user_id: userId,
+    $or: [{ due_date: { $gte: Date.now() } }, { due_date: null }],
+  });
+
+  return transaction;
+};
 module.exports = {
   getAllRecords,
   createRecord,
   getRecordById,
+  getTransactionRecord,
 };

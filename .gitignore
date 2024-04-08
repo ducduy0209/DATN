@@ -4,6 +4,8 @@ node_modules
 # Public folder
 src/public/*
 
+src/assets/*
+
 # yarn error logs
 yarn-error.log
 

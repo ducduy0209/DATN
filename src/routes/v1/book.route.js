@@ -4,11 +4,13 @@ const validate = require('../../middlewares/validate.middleware');
 const { bookValidation } = require('../../validations');
 const { bookController } = require('../../controllers');
 const borrowRecordRoute = require('./borrow_record.route');
-const { uploadFiles, resizeBookPhoto, saveBookPDF } = require('../../middlewares/book.middleware');
+const { uploadFiles, resizeBookPhoto, saveBookPDF, checkAccessRightBook } = require('../../middlewares/book.middleware');
 
 const router = express.Router();
 
 router.use('/:book_id/records', auth('admin'), borrowRecordRoute);
+router.get('/preview/:book_id', auth(), validate(bookValidation.readBook), bookController.previewBook);
+router.get('/read/:book_id', auth(), checkAccessRightBook, validate(bookValidation.readBook), bookController.readBook);
 
 router.post('/checkout', auth(), validate(bookValidation.createCheckoutBook), bookController.createCheckoutBooks);
 router.get('/payment-success', auth(), validate(bookValidation.confirmCheckoutBook), bookController.confirmCheckoutBooks);

@@ -86,6 +86,27 @@ const confirmCheckoutBooks = catchAsync(async (req, res) => {
   res.status(httpStatus.OK).redirect('/');
 });
 
+const previewBook = catchAsync(async (req, res) => {
+  const pdfBytes = await bookService.getPreviewBook(req.params.book_id);
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Length', pdfBytes.length);
+  res.end(pdfBytes);
+});
+
+const readBook = catchAsync(async (req, res) => {
+  const stream = bookService.readBook(req.params.book_id);
+
+  if (req.access_book.status === 'denied') {
+    throw new ApiError(httpStatus.FORBIDDEN, 'You have not permission to access this book');
+  }
+
+  // Todo: Implement when build UI (have 2 status: view - borrow and download - buy)
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', 'inline');
+
+  stream.pipe(res);
+});
+
 module.exports = {
   getBooks,
   createBook,
@@ -94,4 +115,6 @@ module.exports = {
   updateBook,
   createCheckoutBooks,
   confirmCheckoutBooks,
+  previewBook,
+  readBook,
 };
