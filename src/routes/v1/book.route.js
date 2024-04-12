@@ -4,10 +4,12 @@ const validate = require('../../middlewares/validate.middleware');
 const { bookValidation } = require('../../validations');
 const { bookController } = require('../../controllers');
 const borrowRecordRoute = require('./borrow_record.route');
+const reviewRoute = require('./review.route');
 const { uploadFiles, resizeBookPhoto, saveBookPDF, checkAccessRightBook } = require('../../middlewares/book.middleware');
 
 const router = express.Router();
 
+router.use('/:book_id/reviews', reviewRoute);
 router.use('/:book_id/records', auth('admin'), borrowRecordRoute);
 router.get('/preview/:book_id', auth(), validate(bookValidation.readBook), bookController.previewBook);
 router.get('/read/:book_id', auth(), checkAccessRightBook, validate(bookValidation.readBook), bookController.readBook);

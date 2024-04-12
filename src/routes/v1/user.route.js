@@ -5,9 +5,11 @@ const validate = require('../../middlewares/validate.middleware');
 const { userValidation } = require('../../validations');
 const { userController } = require('../../controllers');
 const borrowRecordRoute = require('./borrow_record.route');
+const reviewRoute = require('./review.route');
 
 const router = express.Router();
 
+router.use('/:user_id/reviews', auth(), reviewRoute);
 router.use('/:user_id/records', auth(), borrowRecordRoute);
 
 router.patch('/like-book', auth(), validate(userValidation.likeBook), userController.likeBook);

@@ -53,7 +53,8 @@ const saveBookPDF = catchAsync(async (req, res, next) => {
 });
 
 const checkAccessRightBook = catchAsync(async (req, res, next) => {
-  const transaction = await getTransactionRecord(req.params.book_id, req.user._id);
+  const bookId = req.params.book_id || req.body.book_id;
+  const transaction = await getTransactionRecord(bookId, req.user._id);
 
   const accessStatus = transaction ? `${transaction.due_date ? 'view' : 'download'}` : 'denied';
 
