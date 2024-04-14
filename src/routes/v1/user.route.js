@@ -6,9 +6,11 @@ const { userValidation } = require('../../validations');
 const { userController } = require('../../controllers');
 const borrowRecordRoute = require('./borrow_record.route');
 const reviewRoute = require('./review.route');
+const cartRoute = require('./cart.route');
 
 const router = express.Router();
 
+router.use('/:user_id/carts', auth(), cartRoute);
 router.use('/:user_id/reviews', auth(), reviewRoute);
 router.use('/:user_id/records', auth(), borrowRecordRoute);
 

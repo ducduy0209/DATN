@@ -7,13 +7,11 @@ services:
     environment:
       - MONGODB_URL=mongodb://mongodb:27017/library-system
       - REDIS_URL=redis://redis:6379
-      - RABBITMQ_URL=amqp://rabbitmq:5672
     ports:
       - '3000:3000'
     depends_on:
       - mongodb
       - redis
-      - rabbitmq
     volumes:
       - .:/usr/src/node-app
     networks:
@@ -37,24 +35,10 @@ services:
     networks:
       - node-network
 
-  rabbitmq:
-    image: "rabbitmq:3-management"
-    environment:
-      RABBITMQ_DEFAULT_USER: "due0209"
-      RABBITMQ_DEFAULT_PASS: "due0209"
-    ports:
-      - '5672:5672'
-      - '15672:15672'
-    volumes:
-      - rabbitmqdata:/var/lib/rabbitmq
-    networks:
-      - node-network
-
 volumes:
   dbdata:
   redisdata:
   esdata:
-  rabbitmqdata:
 
 networks:
   node-network:

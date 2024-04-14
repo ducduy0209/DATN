@@ -3,6 +3,7 @@ const authRoute = require('./auth.route');
 const userRoute = require('./user.route');
 const bookRoute = require('./book.route');
 const reviewRoute = require('./review.route');
+const cartRoute = require('./cart.route');
 const docsRoute = require('./docs.route');
 const borrowRecordRoute = require('./borrow_record.route');
 const config = require('../../config/config');
@@ -25,6 +26,10 @@ const defaultRoutes = [
   {
     path: '/borrow-records',
     route: borrowRecordRoute,
+  },
+  {
+    path: '/carts',
+    route: cartRoute,
   },
   {
     path: '/reviews',

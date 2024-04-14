@@ -38,6 +38,10 @@ const userSchema = mongoose.Schema(
       },
       private: true, // used by the toJSON plugin
     },
+    my_refer_code: {
+      type: String,
+      default: shortid.generate(),
+    },
     isActive: {
       type: Boolean,
       default: true,
@@ -91,14 +95,6 @@ userSchema.methods.isPasswordMatch = async function (password) {
   const user = this;
   return bcrypt.compare(password, user.password);
 };
-
-userSchema.pre('save', async function (next) {
-  const user = this;
-  if (!user.my_refer_code) {
-    user.my_refer_code = shortid.generate();
-  }
-  next();
-});
 
 userSchema.pre('save', async function (next) {
   const user = this;

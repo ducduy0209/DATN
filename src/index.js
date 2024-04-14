@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const kue = require('kue');
 const app = require('./app');
 const config = require('./config/config');
 const logger = require('./config/logger');
@@ -26,6 +27,15 @@ const unexpectedErrorHandler = (error) => {
   logger.error(error);
   exitHandler();
 };
+
+require('./jobs/cart.job');
+
+try {
+  kue.app.listen(config.port_queue);
+  logger.info(`Kue UI is running on port ${config.port_queue}`);
+} catch (error) {
+  logger.error('Failed to start Kue UI:', error);
+}
 
 process.on('uncaughtException', unexpectedErrorHandler);
 process.on('unhandledRejection', unexpectedErrorHandler);

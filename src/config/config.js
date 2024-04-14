@@ -8,7 +8,7 @@ const envVarsSchema = Joi.object()
   .keys({
     NODE_ENV: Joi.string().valid('production', 'development', 'test').required(),
     PORT: Joi.number().default(3000),
-    RABBITMQ_URL: Joi.string().required().description('RabbitMQ url'),
+    PORT_QUEUE: Joi.number().default(3001),
     REDIS_HOST: Joi.string().required().description('Redis host'),
     REDIS_PORT: Joi.string().required().description('Redis port'),
     MONGODB_URL: Joi.string().required().description('Mongo DB url'),
@@ -40,6 +40,7 @@ if (error) {
 module.exports = {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
+  port_queue: envVars.PORT_QUEUE,
   redis: {
     host: envVars.REDIS_HOST,
     port: envVars.REDIS_PORT,
@@ -48,7 +49,6 @@ module.exports = {
     client_id: envVars.PAYPAL_CLIENT_ID,
     client_secret: envVars.PAYPAL_CLIENT_SECRET,
   },
-  rabbitmq: envVars.RABBITMQ_URL,
   mongoose: {
     url: envVars.MONGODB_URL + (envVars.NODE_ENV === 'test' ? '-test' : ''),
     options: {
