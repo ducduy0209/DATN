@@ -4,3 +4,4 @@ module.exports.borrowRecordController = require('./borrow_record.controller');
 module.exports.bookController = require('./book.controller');
 module.exports.reviewController = require('./review.controller');
 module.exports.cartController = require('./cart.controller');
+module.exports.genreController = require('./genre.controller');

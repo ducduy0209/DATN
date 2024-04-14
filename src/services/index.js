@@ -5,4 +5,5 @@ module.exports.userService = require('./user.service');
 module.exports.bookService = require('./book.service');
 module.exports.reviewService = require('./review.service');
 module.exports.cartService = require('./cart.service');
+module.exports.genreService = require('./genre.service');
 module.exports.borrowRecordService = require('./borrow_record.service');

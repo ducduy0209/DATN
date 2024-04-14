@@ -27,10 +27,12 @@ const bookSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    genre: {
-      type: Array,
-      required: [true, 'The genre field is required.'],
-    },
+    genres: [
+      {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'Genre',
+      },
+    ],
     summary: {
       type: String,
       required: true,
@@ -90,6 +92,15 @@ bookSchema.pre('save', function (next) {
     .trim()
     .replace(/\s+/g, '-')
     .toLowerCase();
+  next();
+});
+
+bookSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'genres',
+    select: 'name priority',
+  });
+
   next();
 });
 
