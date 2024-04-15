@@ -19,7 +19,7 @@ const createBook = {
     author: Joi.string().required(),
     published_date: Joi.date().required(),
     isbn: Joi.string().required(),
-    genre: Joi.array().required(),
+    genres: Joi.array().required(),
     summary: Joi.string().required().trim(),
     cover_image: Joi.string().required(),
     total_book_pages: Joi.number().required(),
