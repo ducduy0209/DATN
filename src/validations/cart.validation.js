@@ -5,6 +5,7 @@ const createCart = {
   body: Joi.object().keys({
     book_id: Joi.string().custom(objectId).required(),
     duration: Joi.string().required(),
+    price: Joi.number().required(),
     refer_code: Joi.string(),
   }),
   params: Joi.object().keys({
@@ -26,6 +27,7 @@ const getCarts = {
 const updateCart = {
   body: Joi.object().keys({
     duration: Joi.string(),
+    price: Joi.number(),
     refer_code: Joi.string(),
   }),
   params: Joi.object().keys({

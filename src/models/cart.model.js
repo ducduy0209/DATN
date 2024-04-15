@@ -18,6 +18,11 @@ const cartSchema = new mongoose.Schema(
     duration: {
       type: String,
       enum: ['1 month', '3 month', '6 month', 'forever'],
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
     },
   },
   { timestamps: true }
