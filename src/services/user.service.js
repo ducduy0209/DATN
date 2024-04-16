@@ -71,9 +71,19 @@ const updateUserById = async (userId, updateBody) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
 
-  const filteredBody = filterObj(updateBody, 'name', 'email');
+  const filteredBody = filterObj(updateBody, 'name', 'email', 'isEmailVerified');
 
   Object.assign(user, filteredBody);
+  await user.save();
+  return user;
+};
+
+const updateUserPasswordById = async (userId, password) => {
+  const user = await getUserById(userId);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+  user.password = password;
   await user.save();
   return user;
 };
@@ -159,5 +169,6 @@ module.exports = {
   deleteUserById,
   deactivateUserById,
   updateMyPasswordById,
+  updateUserPasswordById,
   likeBook,
 };
