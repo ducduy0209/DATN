@@ -5,6 +5,7 @@ const bookRoute = require('./book.route');
 const reviewRoute = require('./review.route');
 const cartRoute = require('./cart.route');
 const genreRoute = require('./genre.route');
+const bannerRoute = require('./banner.route');
 const docsRoute = require('./docs.route');
 const borrowRecordRoute = require('./borrow_record.route');
 const config = require('../../config/config');
@@ -39,6 +40,10 @@ const defaultRoutes = [
   {
     path: '/genres',
     route: genreRoute,
+  },
+  {
+    path: '/banners',
+    route: bannerRoute,
   },
 ];
 
