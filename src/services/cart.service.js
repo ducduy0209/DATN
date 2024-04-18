@@ -2,6 +2,7 @@
 const { Cart } = require('../models');
 // const ApiError = require('../utils/ApiError');
 const queue = require('../jobs/cart.job');
+const cache = require('../utils/cache');
 
 /**
  * Creates a Promise for a job with the given type and data.
@@ -30,7 +31,14 @@ const updateCartById = (cartId, updatedBody) => createJobPromise('update-cart', 
  * @return {Promise<Array>} The carts that match the filter.
  */
 const getCarts = async (filter) => {
-  return Cart.find(filter);
+  const cachedCarts = await cache.getCache(`${filter.user_id}-carts`);
+  if (!cachedCarts) {
+    const carts = await Cart.find(filter);
+    await cache.setCache(`${filter.user_id}-carts`, carts);
+    return carts;
+  }
+
+  return cachedCarts;
 };
 
 /**

@@ -4,6 +4,7 @@ const userService = require('./user.service');
 const Token = require('../models/token.model');
 const ApiError = require('../utils/ApiError');
 const { tokenTypes } = require('../config/tokens');
+const cache = require('../utils/cache');
 
 /**
  * Login with username and password
@@ -23,6 +24,8 @@ const loginUserWithEmailAndPassword = async (email, password) => {
       'Your account is inactive. Please contact the administrator to active again.'
     );
   }
+
+  await cache.setCache(user._id, user, 60 * 60);
   return user;
 };
 

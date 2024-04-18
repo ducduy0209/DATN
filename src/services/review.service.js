@@ -25,8 +25,7 @@ const createReview = async (reviewBody, userId) => {
  * @return {Array} The reviews that match the filter.
  */
 const getReviews = async (filter, options) => {
-  const reviews = await Review.paginate(filter, options);
-  return reviews;
+  return Review.paginate(filter, options);
 };
 
 /**

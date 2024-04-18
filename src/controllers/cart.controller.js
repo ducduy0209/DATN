@@ -1,5 +1,4 @@
 const httpStatus = require('http-status');
-const pick = require('../utils/pick');
 // const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { cartService } = require('../services');
@@ -14,8 +13,8 @@ const createCart = catchAsync(async (req, res) => {
 });
 
 const getCarts = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['user_id']);
-  const result = await cartService.getCarts(filter);
+  const userId = req.query.user_id || req.user._id;
+  const result = await cartService.getCarts({ user_id: userId });
   res.status(httpStatus.OK).json({
     status: 'success',
     data: result,

@@ -7,7 +7,16 @@ const config = require('../config/config');
 const client = redis.createClient({
   host: config.redis.host,
   port: config.redis.port,
+  legacyMode: true,
 });
+client
+  .connect()
+  .then(() => {
+    logger.info('Connected to Redis');
+  })
+  .catch((err) => {
+    logger.error('Could not connect to Redis', err);
+  });
 client.on('error', (err) => logger.error('Redis Client Error', err));
 
 // Convert callback-based Redis client methods to Promise-based
@@ -21,7 +30,7 @@ const setAsync = promisify(client.set).bind(client);
  * @param {number} duration - Duration of cache existence (in seconds)
  */
 const setCache = async (key, value, duration = 3600) => {
-  await setAsync(key, JSON.stringify(value), 'EX', duration);
+  await setAsync(key.toString(), JSON.stringify(value), 'EX', duration);
 };
 
 /**
@@ -30,7 +39,7 @@ const setCache = async (key, value, duration = 3600) => {
  * @returns {Promise<*>} The cached value (if any)
  */
 const getCache = async (key) => {
-  const data = await getAsync(key);
+  const data = await getAsync(key.toString());
   return data ? JSON.parse(data) : null;
 };
 

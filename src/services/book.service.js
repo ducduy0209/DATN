@@ -7,6 +7,8 @@ const paypal = require('../config/paypal');
 const logger = require('../config/logger');
 const ApiError = require('../utils/ApiError');
 const { createRecord } = require('./borrow_record.service');
+const cache = require('../utils/cache');
+const { bookJob } = require('../jobs');
 
 /**
  * Query for users
@@ -34,13 +36,38 @@ const createBook = async (req, bookBody) => {
   return Book.create(bookBody);
 };
 
+const createJobPromise = (type, data) => {
+  return new Promise((resolve, reject) => {
+    const job = bookJob.create(type, data).save((err) => {
+      if (err) reject(err);
+      else resolve(job.id);
+    });
+  });
+};
+
 /**
  * Get book by id
  * @param {ObjectId} id
  * @returns {Promise<Book>}
  */
 const getBookById = async (id) => {
-  return Book.findById(id);
+  const cachedBooks = await cache.getCache(id);
+  if (!cachedBooks) {
+    const book = await Book.findById(id);
+    await cache.setCache(id, book);
+    return book;
+  }
+  return cachedBooks;
+};
+
+const getBook = async (id) => {
+  const book = await getBookById(id);
+  if (!book) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
+  }
+  createJobPromise('increase-access-time-book', { bookId: id });
+
+  return book;
 };
 
 /**
@@ -225,6 +252,7 @@ const readBook = async (bookId) => {
 };
 
 module.exports = {
+  getBook,
   queryBooks,
   createBook,
   getBookById,

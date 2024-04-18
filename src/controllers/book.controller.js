@@ -46,12 +46,7 @@ const createBook = catchAsync(async (req, res) => {
 });
 
 const getBook = catchAsync(async (req, res) => {
-  const book = await bookService.getBookById(req.params.bookId);
-  if (!book) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
-  }
-  book.access_times += 1;
-  await book.save();
+  const book = await bookService.getBook(req.params.bookId);
   res.status(httpStatus.OK).json({
     status: 'success',
     data: { book },

@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const { User } = require('../models');
 const ApiError = require('../utils/ApiError');
+const cache = require('../utils/cache');
 
 /**
  * Create a user
@@ -34,7 +35,14 @@ const queryUsers = async (filter, options) => {
  * @returns {Promise<User>}
  */
 const getUserById = async (id) => {
-  return User.findById(id);
+  const cachedUsers = await cache.getCache(id);
+  if (!cachedUsers) {
+    const user = await User.findById(id);
+    await cache.setCache(id, user);
+    return user;
+  }
+
+  return cachedUsers;
 };
 
 /**
