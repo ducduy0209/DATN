@@ -11,6 +11,7 @@ const affiliateSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      index: true,
     },
     link_count: {
       type: Number,
@@ -21,6 +22,10 @@ const affiliateSchema = new mongoose.Schema(
       default: 0,
     },
     commission_amount: {
+      type: Number,
+      default: 0,
+    },
+    commission_paid: {
       type: Number,
       default: 0,
     },
@@ -62,6 +67,12 @@ const affiliateSchema = new mongoose.Schema(
 
 affiliateSchema.plugin(toJSON);
 affiliateSchema.plugin(paginate);
+
+affiliateSchema.set('toJSON', { virtuals: true });
+
+affiliateSchema.virtual('commission_remaining').get(function () {
+  return this.commission_amount - this.commission_paid;
+});
 
 affiliateSchema.pre(/^find/, function (next) {
   this.populate({
