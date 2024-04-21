@@ -5,4 +5,5 @@ module.exports.Review = require('./review.model');
 module.exports.Cart = require('./cart.model');
 module.exports.Genre = require('./genre.model');
 module.exports.Banner = require('./banner.model');
+module.exports.Affiliate = require('./affiliate.model');
 module.exports.BorrowRecord = require('./borrowRecord.model');

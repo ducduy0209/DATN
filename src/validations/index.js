@@ -6,3 +6,4 @@ module.exports.reviewValidation = require('./review.validation');
 module.exports.cartValidation = require('./cart.validation');
 module.exports.genreValidation = require('./genre.validation');
 module.exports.bannerValidation = require('./banner.validation');
+module.exports.affiliateValidation = require('./affiliate.validation');

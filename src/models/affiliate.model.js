@@ -3,7 +3,10 @@ const { toJSON, paginate } = require('./plugins');
 
 const affiliateSchema = new mongoose.Schema(
   {
-    user_id: mongoose.SchemaTypes.ObjectId,
+    user_id: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'User',
+    },
     refer_code: {
       type: String,
       required: true,
@@ -23,14 +26,51 @@ const affiliateSchema = new mongoose.Schema(
     },
     commission_percent: {
       type: Number,
-      default: 25,
+      default: 15,
     },
+    email_receiver: String,
+    isUpdatedReceiver: {
+      type: Boolean,
+      default: false,
+    },
+    commission_history: [
+      {
+        book: {
+          type: mongoose.SchemaTypes.ObjectId,
+          ref: 'Book',
+        },
+        duration: String,
+        commission_amount: Number,
+        date: {
+          type: Date,
+          default: Date.now(),
+        },
+      },
+    ],
+    payment_history: [
+      {
+        amount: Number,
+        date: {
+          type: Date,
+          default: Date.now(),
+        },
+      },
+    ],
   },
   { timestamps: true }
 );
 
 affiliateSchema.plugin(toJSON);
 affiliateSchema.plugin(paginate);
+
+affiliateSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'commission_history.book',
+    select: 'title slug',
+  });
+
+  next();
+});
 
 const Affiliate = mongoose.model('Affiliate', affiliateSchema);
 

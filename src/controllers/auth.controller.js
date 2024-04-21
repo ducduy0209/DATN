@@ -1,7 +1,7 @@
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const { authService, userService, tokenService } = require('../services');
-const { emailJob } = require('../jobs');
+const { emailJob, affiliateJob } = require('../jobs');
 
 const createJobPromise = (type, data) => {
   return new Promise((resolve, reject) => {
@@ -15,7 +15,10 @@ const createJobPromise = (type, data) => {
 const register = catchAsync(async (req, res) => {
   const user = await userService.createUser(req.body);
   const tokens = await tokenService.generateAuthTokens(user);
-  createJobPromise('send-verify-email', { user });
+  await Promise.all([
+    emailJob.create('send-verify-email', { user }).save(),
+    affiliateJob.create('create-affiliate-table', { user }).save(),
+  ]);
   res.status(httpStatus.CREATED).json({
     status: 'success',
     data: { user, tokens },
