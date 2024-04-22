@@ -25,4 +25,27 @@ queue.process('create-affiliate-table', async (job, done) => {
   }
 });
 
+queue.process('click-affiliate', async (job, done) => {
+  // eslint-disable-next-line camelcase
+  const { refer_code } = job.data;
+
+  try {
+    const existingAffiliate = await Affiliate.findOne({ refer_code });
+
+    if (!existingAffiliate) {
+      done();
+      return;
+    }
+
+    existingAffiliate.link_count += 1;
+    await existingAffiliate.save();
+
+    logger.info(`Job ${job.id} - click link affiliate completed`);
+    done();
+  } catch (error) {
+    logger.error(`Error processing job: click link affiliate`, error);
+    done(error);
+  }
+});
+
 module.exports = queue;

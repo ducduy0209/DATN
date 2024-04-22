@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const { Affiliate } = require('../models');
 const ApiError = require('../utils/ApiError');
+const { affiliateJob } = require('../jobs');
 
 /**
  * Creates a new affiliate.
@@ -67,10 +68,20 @@ const updateAffiliate = async (affiliateId, affiliateBody) => {
   return affiliate.save();
 };
 
+const clickAffiliate = (referCode) => {
+  return new Promise((resolve, reject) => {
+    const job = affiliateJob.create('click-affiliate', { refer_code: referCode }).save((err) => {
+      if (err) reject(err);
+      else resolve(job.id);
+    });
+  });
+};
+
 module.exports = {
   createAffiliate,
   getAffiliates,
   getAffiliate,
   deleteAffiliateById,
   updateAffiliate,
+  clickAffiliate,
 };

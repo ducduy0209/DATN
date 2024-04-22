@@ -6,6 +6,8 @@ const { affiliateController } = require('../../controllers');
 
 const router = express.Router({ mergeParams: true });
 
+router.get('/:code/click', validate(affiliateValidation.clickAffiliate), affiliateController.clickAffiliate);
+
 router
   .route('/')
   .post(auth('admin'), validate(affiliateValidation.createAffiliate), affiliateController.createAffiliate)

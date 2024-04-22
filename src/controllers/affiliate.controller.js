@@ -37,10 +37,9 @@ const getAffiliate = catchAsync(async (req, res) => {
 });
 
 const updateAffiliate = catchAsync(async (req, res) => {
-  const affiliate = await affiliateService.updateAffiliate(req.params.affiliateId, req.body);
+  affiliateService.clickAffiliate(req.params.code);
   res.status(httpStatus.OK).json({
     status: 'success',
-    data: affiliate,
   });
 });
 
@@ -51,10 +50,18 @@ const deleteAffiliate = catchAsync(async (req, res) => {
   });
 });
 
+const clickAffiliate = (req, res) => {
+  affiliateService.clickAffiliate(req.params.code);
+  res.status(httpStatus.OK).json({
+    status: 'success',
+  });
+};
+
 module.exports = {
   createAffiliate,
   getAffiliates,
   getAffiliate,
   updateAffiliate,
   deleteAffiliate,
+  clickAffiliate,
 };

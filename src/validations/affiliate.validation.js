@@ -40,10 +40,17 @@ const deleteAffiliate = {
   }),
 };
 
+const clickAffiliate = {
+  params: Joi.object().keys({
+    code: Joi.string().required(),
+  }),
+};
+
 module.exports = {
   createAffiliate,
   getAffiliates,
   getAffiliate,
   updateAffiliate,
   deleteAffiliate,
+  clickAffiliate,
 };
