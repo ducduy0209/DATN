@@ -8,7 +8,7 @@ const logger = require('../config/logger');
 const ApiError = require('../utils/ApiError');
 const { createRecord } = require('./borrow_record.service');
 const cache = require('../utils/cache');
-const { bookJob } = require('../jobs');
+const { bookJob, affiliateJob } = require('../jobs');
 
 /**
  * Query for users
@@ -116,8 +116,8 @@ const deleteBookById = async (id) => {
 const createCheckoutBooks = async (res, booksDetails) => {
   let totalAmount = 0;
   const items = await Promise.all(
-    booksDetails.map(async ({ bookId, duration }) => {
-      const book = await getBookById(bookId);
+    booksDetails.map(async ({ bookId, duration, referCode = '' }) => {
+      const book = await Book.findOne({ _id: bookId });
       if (!book) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
       }
@@ -130,7 +130,7 @@ const createCheckoutBooks = async (res, booksDetails) => {
       totalAmount += price;
       return {
         name: book.title,
-        sku: `${bookId}-${duration}`,
+        sku: `${bookId}_${duration}_${referCode}`,
         price: price.toFixed(2),
         currency: 'USD',
         quantity: 1,
@@ -195,7 +195,17 @@ const confirmCheckoutBooks = async (paymentId, PayerID, userId) => {
       throw error;
     } else if (payment.state === 'approved') {
       const promises = payment.transactions[0].item_list.items.map((book) => {
-        const splitSku = book.sku.split('-');
+        const splitSku = book.sku.split('_');
+        if (splitSku[2] !== '') {
+          affiliateJob
+            .create('create-commission-affiliate', {
+              book_id: splitSku[0],
+              price: book.price,
+              refer_code: splitSku[2],
+              duration: splitSku[1],
+            })
+            .save();
+        }
         return createRecord({
           book_id: splitSku[0],
           user_id: userId,

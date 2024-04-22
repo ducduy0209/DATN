@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { toJSON } = require('./plugins');
+const { enumDuration } = require('../constants');
 
 const cartSchema = new mongoose.Schema(
   {
@@ -17,7 +18,7 @@ const cartSchema = new mongoose.Schema(
     },
     duration: {
       type: String,
-      enum: ['1 month', '3 month', '6 month', 'forever'],
+      enum: enumDuration,
       required: true,
     },
     price: {

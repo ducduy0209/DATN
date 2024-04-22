@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
+const { enumDuration } = require('../constants');
 
 const bookSchema = new mongoose.Schema(
   {
@@ -62,6 +63,7 @@ const bookSchema = new mongoose.Schema(
       {
         duration: {
           type: String,
+          enum: enumDuration,
           required: true,
         },
         price: {

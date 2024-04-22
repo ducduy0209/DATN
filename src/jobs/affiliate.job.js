@@ -48,4 +48,38 @@ queue.process('click-affiliate', async (job, done) => {
   }
 });
 
+queue.process('create-commission-affiliate', async (job, done) => {
+  const calculateCommission = (purchaseAmount, commissionPercent) => {
+    return (purchaseAmount * commissionPercent) / 100;
+  };
+  // eslint-disable-next-line camelcase
+  const { book_id, price, refer_code, duration } = job.data;
+
+  try {
+    const existingAffiliate = await Affiliate.findOne({ refer_code });
+
+    if (!existingAffiliate) {
+      done();
+      return;
+    }
+
+    const commissionAmount = calculateCommission(price, existingAffiliate.commission_percent);
+
+    existingAffiliate.purchase_count += 1;
+    existingAffiliate.commission_amount += commissionAmount;
+    existingAffiliate.commission_history.push({
+      book: book_id,
+      duration,
+      commission_amount: commissionAmount,
+    });
+    await existingAffiliate.save();
+
+    logger.info(`Job ${job.id} - create commission affiliate completed`);
+    done();
+  } catch (error) {
+    logger.error(`Error processing job: create commission affiliate`, error);
+    done(error);
+  }
+});
+
 module.exports = queue;

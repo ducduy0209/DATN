@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const moment = require('moment');
 const { toJSON, paginate } = require('./plugins');
+const { enumDuration, enumPayBy } = require('../constants');
 
 const borrowRecordSchema = new mongoose.Schema(
   {
@@ -22,7 +23,7 @@ const borrowRecordSchema = new mongoose.Schema(
     },
     duration: {
       type: String,
-      enum: ['1 month', '3 month', '6 month', 'forever'],
+      enum: enumDuration,
     },
     price: {
       type: Number,
@@ -30,7 +31,7 @@ const borrowRecordSchema = new mongoose.Schema(
     },
     payBy: {
       type: String,
-      enum: ['paypal', 'cash'],
+      enum: enumPayBy,
       default: 'cash',
     },
   },
