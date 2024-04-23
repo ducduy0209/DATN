@@ -8,7 +8,7 @@ const logger = require('../config/logger');
 const ApiError = require('../utils/ApiError');
 const { createRecord } = require('./borrow_record.service');
 const cache = require('../utils/cache');
-const { bookJob, affiliateJob, couponJob } = require('../jobs');
+const { bookJob, affiliateJob, couponJob, cartJob } = require('../jobs');
 
 /**
  * Query for users
@@ -209,6 +209,7 @@ const confirmCheckoutBooks = async (paymentId, PayerID, userId) => {
             })
             .save();
         }
+        cartJob.create('check-cart-to-delete', { book_id: splitSku[0], user_id: userId }).save();
         return createRecord({
           book_id: splitSku[0],
           user_id: userId,

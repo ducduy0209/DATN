@@ -38,4 +38,20 @@ queue.process('update-cart', async (job, done) => {
   }
 });
 
+queue.process('check-cart-to-delete', async (job, done) => {
+  // eslint-disable-next-line camelcase
+  const { user_id, book_id } = job.data;
+  try {
+    const existingCart = await Cart.findOne({ user_id, book_id });
+    if (existingCart) {
+      await existingCart.remove();
+    }
+    logger.info(`Job ${job.id} - check cart to delete completed`);
+    done();
+  } catch (error) {
+    logger.error(`Error processing job: check cart to delete`, error);
+    done(error);
+  }
+});
+
 module.exports = queue;
