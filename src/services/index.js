@@ -7,5 +7,6 @@ module.exports.reviewService = require('./review.service');
 module.exports.cartService = require('./cart.service');
 module.exports.genreService = require('./genre.service');
 module.exports.bannerService = require('./banner.service');
+module.exports.couponService = require('./coupon.service');
 module.exports.affiliateService = require('./affiliate.service');
 module.exports.borrowRecordService = require('./borrow_record.service');

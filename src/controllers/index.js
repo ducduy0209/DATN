@@ -6,4 +6,5 @@ module.exports.reviewController = require('./review.controller');
 module.exports.cartController = require('./cart.controller');
 module.exports.bannerController = require('./banner.controller');
 module.exports.genreController = require('./genre.controller');
+module.exports.couponController = require('./coupon.controller');
 module.exports.affiliateController = require('./affiliate.controller');
