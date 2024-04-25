@@ -28,7 +28,10 @@ const createBanner = catchAsync(async (req, res) => {
 const getBanners = catchAsync(async (req, res) => {
   const originalFilter = pick(req.query, ['name', 'isActive']);
   const filter = configFilter(originalFilter);
-  const options = pick(req.query, ['sortBy', 'limit', 'page', 'name', 'isActive']);
+  if (!req.user && req.user.role === 'user') {
+    filter.$or = [{ due_date: null }, { due_date: { $gt: new Date() } }];
+  }
+  const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await bannerService.getBanners(filter, options);
   res.status(httpStatus.OK).json({
     status: 'success',

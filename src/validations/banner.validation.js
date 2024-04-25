@@ -16,6 +16,7 @@ const getBanners = {
     page: Joi.number().integer(),
     name: Joi.string(),
     isActive: Joi.boolean(),
+    isShow: Joi.boolean(),
   }),
 };
 
