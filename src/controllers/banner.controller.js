@@ -28,7 +28,7 @@ const createBanner = catchAsync(async (req, res) => {
 const getBanners = catchAsync(async (req, res) => {
   const originalFilter = pick(req.query, ['name', 'isActive']);
   const filter = configFilter(originalFilter);
-  if (!req.user && req.user.role === 'user') {
+  if (req.query.isShow) {
     filter.$or = [{ due_date: null }, { due_date: { $gt: new Date() } }];
   }
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
