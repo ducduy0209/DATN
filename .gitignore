@@ -1,9 +1,6 @@
 # Dependencies
 node_modules
 
-# Public folder
-src/public/*
-
 src/assets/*
 
 # yarn error logs

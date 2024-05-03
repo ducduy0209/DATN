@@ -12,7 +12,6 @@ const morgan = require('./config/morgan');
 const { jwtStrategy } = require('./config/passport');
 const { authLimiter } = require('./middlewares/rateLimiter.middleware');
 const routes = require('./routes/v1');
-const viewRoutes = require('./routes/view');
 const { errorConverter, errorHandler } = require('./middlewares/error.middleware');
 const ApiError = require('./utils/ApiError');
 
@@ -50,16 +49,11 @@ app.options('*', cors());
 app.use(passport.initialize());
 passport.use('jwt', jwtStrategy);
 
-// set up views
-app.set('view engine', 'pug');
-app.set('views', path.join(__dirname, 'views'));
-
 // limit repeated failed requests to auth endpoints
 if (config.env === 'production') {
   app.use('/v1/auth', authLimiter);
 }
-// user interface routes (view routes)
-app.use('/', viewRoutes);
+
 // v1 api routes
 app.use('/v1', routes);
 
