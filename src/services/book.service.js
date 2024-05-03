@@ -2,7 +2,7 @@ const httpStatus = require('http-status');
 const { PDFDocument } = require('pdf-lib');
 const fs = require('fs');
 const path = require('path');
-const { Book } = require('../models');
+const { Book, Genre } = require('../models');
 const paypal = require('../config/paypal');
 const logger = require('../config/logger');
 const ApiError = require('../utils/ApiError');
@@ -265,6 +265,11 @@ const readBook = async (bookId) => {
   return stream;
 };
 
+const getBooksWithGenres = async (genre, options) => {
+  const genreInfo = await Genre.findOne({ slug: genre });
+  return Book.paginate({ genres: { $in: [genreInfo.id] } }, options);
+};
+
 module.exports = {
   getBook,
   queryBooks,
@@ -276,4 +281,5 @@ module.exports = {
   confirmCheckoutBooks,
   getPreviewBook,
   readBook,
+  getBooksWithGenres,
 };

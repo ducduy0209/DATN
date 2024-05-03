@@ -11,6 +11,7 @@ const router = express.Router();
 
 router.use('/:book_id/reviews', reviewRoute);
 router.use('/:book_id/records', auth('admin'), borrowRecordRoute);
+router.get('/genres/:genre', validate(bookValidation.getBooksWithGenres), bookController.getBooksWithGenres);
 router.get('/preview/:book_id', auth(), validate(bookValidation.readBook), bookController.previewBook);
 router.get('/read/:book_id', auth(), checkAccessRightBook, validate(bookValidation.readBook), bookController.readBook);
 

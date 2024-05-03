@@ -75,6 +75,17 @@ const readBook = {
   }),
 };
 
+const getBooksWithGenres = {
+  query: Joi.object().keys({
+    sortBy: Joi.string(),
+    limit: Joi.number().integer(),
+    page: Joi.number().integer(),
+  }),
+  params: Joi.object().keys({
+    genre: Joi.string().required(),
+  }),
+};
+
 module.exports = {
   getBooks,
   createBook,
@@ -84,4 +95,5 @@ module.exports = {
   createCheckoutBook,
   confirmCheckoutBook,
   readBook,
+  getBooksWithGenres,
 };

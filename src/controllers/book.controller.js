@@ -102,6 +102,15 @@ const readBook = catchAsync(async (req, res) => {
   stream.pipe(res);
 });
 
+const getBooksWithGenres = catchAsync(async (req, res) => {
+  const options = pick(req.query, ['sortBy', 'limit', 'page']);
+  const books = await bookService.getBooksWithGenres(req.params.genre, options);
+  res.status(httpStatus.OK).json({
+    status: 'success',
+    data: { books },
+  });
+});
+
 module.exports = {
   getBooks,
   createBook,
@@ -112,4 +121,5 @@ module.exports = {
   confirmCheckoutBooks,
   previewBook,
   readBook,
+  getBooksWithGenres,
 };

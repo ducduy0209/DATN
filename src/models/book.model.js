@@ -100,7 +100,7 @@ bookSchema.pre('save', function (next) {
 bookSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'genres',
-    select: 'name priority',
+    select: 'name priority slug',
   });
 
   next();

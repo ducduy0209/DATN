@@ -10,6 +10,9 @@ const genreSchema = new mongoose.Schema(
       unique: true,
       index: 'text',
     },
+    slug: {
+      type: String,
+    },
     priority: {
       type: Number,
       default: 0,
@@ -19,6 +22,15 @@ const genreSchema = new mongoose.Schema(
 );
 
 genreSchema.plugin(toJSON);
+
+genreSchema.pre('save', function (next) {
+  this.slug = this.title
+    .replace(/[^\w\s]/gi, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .toLowerCase();
+  next();
+});
 
 const Genre = mongoose.model('Genre', genreSchema);
 
