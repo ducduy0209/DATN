@@ -81,6 +81,10 @@ const bookSchema = new mongoose.Schema(
       type: Number,
       default: 4.5,
     },
+    // price of duration 1 month to sort
+    price: {
+      type: Number,
+    },
   },
   { timestamps: true }
 );
@@ -99,6 +103,12 @@ bookSchema.pre('save', function (next) {
     .trim()
     .replace(/\s+/g, '-')
     .toLowerCase();
+  const oneMonthPrice = this.prices.find((price) => price.duration === '1 month');
+  if (oneMonthPrice) {
+    this.price = oneMonthPrice.price;
+  } else {
+    this.price = 0;
+  }
   next();
 });
 
