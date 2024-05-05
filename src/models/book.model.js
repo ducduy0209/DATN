@@ -72,6 +72,11 @@ const bookSchema = new mongoose.Schema(
         },
       },
     ],
+    languange: {
+      type: String,
+      default: 'en',
+      enum: ['en', 'vi'],
+    },
     rating: {
       type: Number,
       default: 4.5,

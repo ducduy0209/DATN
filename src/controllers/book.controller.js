@@ -5,13 +5,17 @@ const catchAsync = require('../utils/catchAsync');
 const { bookService } = require('../services');
 
 const configFilter = (filter) => {
-  const { search = '', genre = '', fromPrice = 0, toPrice = 0 } = filter;
+  const { search = '', genre = '', language = '', fromPrice = 0, toPrice = 0 } = filter;
   const adjustedFilter = {};
   if (search) {
     adjustedFilter.$text = { $search: search.trim() };
   }
   if (genre) {
     adjustedFilter.genre = genre;
+  }
+
+  if (language) {
+    adjustedFilter.language = language;
   }
 
   if (+fromPrice !== 0 || +toPrice !== 0) {
@@ -27,7 +31,7 @@ const configFilter = (filter) => {
 };
 
 const getBooks = catchAsync(async (req, res) => {
-  const filterOriginal = pick(req.query, ['search', 'genre', 'fromPrice', 'toPrice']);
+  const filterOriginal = pick(req.query, ['search', 'genre', 'fromPrice', 'toPrice', 'language']);
   const filter = configFilter(filterOriginal);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await bookService.queryBooks(filter, options);

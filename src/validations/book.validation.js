@@ -5,6 +5,7 @@ const getBooks = {
   query: Joi.object().keys({
     search: Joi.string(),
     genre: Joi.string(),
+    language: Joi.string(),
     fromPrice: Joi.number().integer(),
     toPrice: Joi.number().integer(),
     sortBy: Joi.string(),
