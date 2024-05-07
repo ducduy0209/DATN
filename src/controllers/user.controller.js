@@ -74,6 +74,16 @@ const likeBook = catchAsync(async (req, res) => {
   });
 });
 
+const getMyBooks = catchAsync(async (req, res) => {
+  const options = pick(req.query, ['sortBy', 'limit', 'page']);
+  const books = await userService.getMyBooks(req.user._id, options);
+
+  res.status(httpStatus.OK).json({
+    status: 'success',
+    books,
+  });
+});
+
 module.exports = {
   createUser,
   getUsers,
@@ -83,4 +93,5 @@ module.exports = {
   deleteMe,
   updateMyPassword,
   likeBook,
+  getMyBooks,
 };

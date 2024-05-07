@@ -18,6 +18,7 @@ router.use('/:user_id/affiliates', auth(), affiliateRoute);
 
 router.patch('/like-book', auth(), validate(userValidation.likeBook), userController.likeBook);
 
+router.get('/my-books', auth(), userController.getMyBooks);
 router.get('/me', auth(), getMe, userController.getUser);
 router.patch('/update-my-password', auth(), validate(userValidation.updateMyPassword), userController.updateMyPassword);
 router.patch(

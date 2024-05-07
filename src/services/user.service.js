@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { User } = require('../models');
+const { User, Book, BorrowRecord } = require('../models');
 const ApiError = require('../utils/ApiError');
 const cache = require('../utils/cache');
 
@@ -168,6 +168,13 @@ const likeBook = async (userId, bookId) => {
   return 'The book has been added to your favorites';
 };
 
+const getMyBooks = async (userId, options) => {
+  const records = await BorrowRecord.find({ user_id: userId, $or: [{ due_date: null }, { due_date: { $gt: new Date() } }] });
+  const bookIds = records.map((record) => record.book_id);
+
+  return Book.paginate({ _id: { $in: bookIds } }, options);
+};
+
 module.exports = {
   createUser,
   queryUsers,
@@ -179,4 +186,5 @@ module.exports = {
   updateMyPasswordById,
   updateUserPasswordById,
   likeBook,
+  getMyBooks,
 };
