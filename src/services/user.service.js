@@ -168,6 +168,13 @@ const likeBook = async (userId, bookId) => {
   return 'The book has been added to your favorites';
 };
 
+/**
+ * Retrieves books for a specific user based on the user ID and options provided.
+ *
+ * @param {string} userId - The ID of the user to retrieve books for.
+ * @param {Object} options - Additional options for pagination and querying.
+ * @return {Promise} A Promise that resolves to the paginated books for the user.
+ */
 const getMyBooks = async (userId, options) => {
   const records = await BorrowRecord.find({ user_id: userId, $or: [{ due_date: null }, { due_date: { $gt: new Date() } }] });
   const bookIds = records.map((record) => record.book_id);

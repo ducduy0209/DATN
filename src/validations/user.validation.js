@@ -66,6 +66,14 @@ const likeBook = {
   }),
 };
 
+const getMyBooks = {
+  query: Joi.object().keys({
+    sortBy: Joi.string(),
+    limit: Joi.number().integer(),
+    page: Joi.number().integer(),
+  }),
+};
+
 module.exports = {
   createUser,
   getUsers,
@@ -75,4 +83,5 @@ module.exports = {
   updateMyPassword,
   updateMe,
   likeBook,
+  getMyBooks,
 };
