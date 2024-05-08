@@ -232,10 +232,10 @@ const getPreviewBook = async (bookId) => {
   const originalPdfPath = path.join(__dirname, '../', 'assets', `${book.digital_content}`);
   // eslint-disable-next-line security/detect-non-literal-fs-filename
   const originalPdfBytes = fs.readFileSync(originalPdfPath);
-  const pdfDoc = await PDFDocument.load(originalPdfBytes);
+  const pdfDoc = await PDFDocument.load(originalPdfBytes, { ignoreEncryption: true });
 
   const newPdfDoc = await PDFDocument.create();
-  const pageCount = Math.min(3, pdfDoc.getPageCount());
+  const pageCount = Math.min(4, pdfDoc.getPageCount());
 
   for (let i = 0; i < pageCount; i += 1) {
     // eslint-disable-next-line no-await-in-loop
@@ -270,6 +270,10 @@ const getBooksWithGenres = async (genre, options) => {
   return Book.paginate({ genres: { $in: [genreInfo.id] } }, options);
 };
 
+const getBookBySlug = async (slug) => {
+  return Book.findOne({ slug });
+};
+
 module.exports = {
   getBook,
   queryBooks,
@@ -282,4 +286,5 @@ module.exports = {
   getPreviewBook,
   readBook,
   getBooksWithGenres,
+  getBookBySlug,
 };

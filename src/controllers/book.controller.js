@@ -5,7 +5,7 @@ const catchAsync = require('../utils/catchAsync');
 const { bookService } = require('../services');
 
 const configFilter = (filter) => {
-  const { search = '', language = '', fromPrice = 0, toPrice = 0 } = filter;
+  const { search = '', language = '', fromPrice = 0, toPrice = 0, slug = '' } = filter;
   const adjustedFilter = {};
   if (search) {
     adjustedFilter.$text = { $search: search.trim() };
@@ -13,6 +13,10 @@ const configFilter = (filter) => {
 
   if (language) {
     adjustedFilter.language = language;
+  }
+
+  if (slug) {
+    adjustedFilter.slug = slug;
   }
 
   if (+fromPrice !== 0 || +toPrice !== 0) {
@@ -28,7 +32,7 @@ const configFilter = (filter) => {
 };
 
 const getBooks = catchAsync(async (req, res) => {
-  const filterOriginal = pick(req.query, ['search', 'fromPrice', 'toPrice', 'language']);
+  const filterOriginal = pick(req.query, ['search', 'fromPrice', 'toPrice', 'language', 'slug']);
   const filter = configFilter(filterOriginal);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await bookService.queryBooks(filter, options);
@@ -112,6 +116,14 @@ const getBooksWithGenres = catchAsync(async (req, res) => {
   });
 });
 
+const getBookBySlug = catchAsync(async (req, res) => {
+  const book = await bookService.getBookBySlug(req.params.slug);
+  res.status(httpStatus.OK).json({
+    status: 'success',
+    data: { book },
+  });
+});
+
 module.exports = {
   getBooks,
   createBook,
@@ -123,4 +135,5 @@ module.exports = {
   previewBook,
   readBook,
   getBooksWithGenres,
+  getBookBySlug,
 };

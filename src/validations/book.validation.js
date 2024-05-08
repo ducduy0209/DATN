@@ -5,6 +5,7 @@ const getBooks = {
   query: Joi.object().keys({
     search: Joi.string(),
     language: Joi.string(),
+    slug: Joi.string(),
     fromPrice: Joi.number().integer(),
     toPrice: Joi.number().integer(),
     sortBy: Joi.string(),
@@ -86,6 +87,12 @@ const getBooksWithGenres = {
   }),
 };
 
+const getBookBySlug = {
+  params: Joi.object().keys({
+    slug: Joi.string().required(),
+  }),
+};
+
 module.exports = {
   getBooks,
   createBook,
@@ -96,4 +103,5 @@ module.exports = {
   confirmCheckoutBook,
   readBook,
   getBooksWithGenres,
+  getBookBySlug,
 };

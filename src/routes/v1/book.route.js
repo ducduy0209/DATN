@@ -14,6 +14,7 @@ router.use('/:book_id/records', auth('admin'), borrowRecordRoute);
 router.get('/genres/:genre', validate(bookValidation.getBooksWithGenres), bookController.getBooksWithGenres);
 router.get('/preview/:book_id', auth(), validate(bookValidation.readBook), bookController.previewBook);
 router.get('/read/:book_id', auth(), checkAccessRightBook, validate(bookValidation.readBook), bookController.readBook);
+router.get('/search/:slug', auth(), validate(bookValidation.getBookBySlug), bookController.getBookBySlug);
 
 router.post('/checkout', auth(), validate(bookValidation.createCheckoutBook), bookController.createCheckoutBooks);
 router.get('/payment-success', auth(), validate(bookValidation.confirmCheckoutBook), bookController.confirmCheckoutBooks);
