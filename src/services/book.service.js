@@ -265,11 +265,26 @@ const readBook = async (bookId) => {
   return stream;
 };
 
+/**
+ * Retrieves books with the specified genre and paginates the results.
+ *
+ * @param {string} genre - The genre of the books to retrieve.
+ * @param {Object} options - The pagination options.
+ * @param {number} options.limit - The maximum number of books per page.
+ * @param {number} options.page - The current page number.
+ * @return {Promise<Object>} A promise that resolves to the paginated books.
+ */
 const getBooksWithGenres = async (genre, options) => {
   const genreInfo = await Genre.findOne({ slug: genre });
   return Book.paginate({ genres: { $in: [genreInfo.id] } }, options);
 };
 
+/**
+ * Retrieves a book by its slug.
+ *
+ * @param {string} slug - The slug of the book to retrieve.
+ * @return {Promise} A Promise that resolves to the book with the provided slug.
+ */
 const getBookBySlug = async (slug) => {
   return Book.findOne({ slug });
 };
