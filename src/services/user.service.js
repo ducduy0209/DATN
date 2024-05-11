@@ -70,7 +70,7 @@ const filterObj = (obj, ...allowedFields) => {
  * @returns {Promise<User>}
  */
 const updateUserById = async (userId, updateBody) => {
-  const user = await getUserById(userId);
+  const user = await User.findById(userId);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
@@ -79,20 +79,20 @@ const updateUserById = async (userId, updateBody) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
 
-  const filteredBody = filterObj(updateBody, 'name', 'email', 'isEmailVerified');
-
+  const filteredBody = filterObj(updateBody, 'name', 'email', 'isEmailVerified', 'image');
   Object.assign(user, filteredBody);
-  await cache.setCache(userId, user);
   await user.save();
+  await cache.setCache(userId, user);
   return user;
 };
 
 const updateUserPasswordById = async (userId, password) => {
-  const user = await getUserById(userId);
+  const user = await User.findById(userId);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
   user.password = password;
+  await cache.setCache(userId, user);
   await user.save();
   return user;
 };

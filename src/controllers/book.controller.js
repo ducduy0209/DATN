@@ -8,7 +8,7 @@ const configFilter = (filter) => {
   const { search = '', language = '', fromPrice = 0, toPrice = 0, slug = '' } = filter;
   const adjustedFilter = {};
   if (search) {
-    adjustedFilter.$text = { $search: search.trim() };
+    adjustedFilter.$text = { $search: `/${search.trim()}/i` };
   }
 
   if (language) {
