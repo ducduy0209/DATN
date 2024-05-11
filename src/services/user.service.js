@@ -134,7 +134,7 @@ const deactivateUserById = async (userId) => {
  */
 const updateMyPasswordById = async (userId, updateBody) => {
   const { currentPassword, newPassword } = updateBody;
-  const user = await getUserById(userId);
+  const user = await User.findById(userId);
 
   if (!user || !(await user.isPasswordMatch(currentPassword))) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect current password');
