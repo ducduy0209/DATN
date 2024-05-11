@@ -28,6 +28,14 @@ const getGenre = catchAsync(async (req, res) => {
   });
 });
 
+const getGenreBySlug = catchAsync(async (req, res) => {
+  const genre = await genreService.getGenreBySlug(req.params.slug);
+  res.status(200).json({
+    status: 'success',
+    data: genre,
+  });
+});
+
 const updateGenre = catchAsync(async (req, res) => {
   const genre = await genreService.updateGenreById(req.params.genreId, req.body);
   res.status(200).json({
@@ -49,4 +57,5 @@ module.exports = {
   getGenre,
   updateGenre,
   deleteGenre,
+  getGenreBySlug,
 };

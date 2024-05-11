@@ -14,6 +14,10 @@ const getGenreById = async (id) => {
   return Genre.findById(id);
 };
 
+const getGenreBySlug = async (slug) => {
+  return Genre.findOne({ slug });
+};
+
 const updateGenreById = async (id, updatedData) => {
   const genre = await Genre.findById(id);
   if (!genre) {
@@ -36,4 +40,5 @@ module.exports = {
   getGenreById,
   updateGenreById,
   deleteGenreById,
+  getGenreBySlug,
 };

@@ -13,8 +13,10 @@ router
 
 router
   .route('/:genreId')
-  .get(auth(), validate(genreValidation.getGenre), genreController.getGenre)
+  // .get(auth(), validate(genreValidation.getGenre), genreController.getGenre)
   .patch(auth('admin'), validate(genreValidation.updateGenre), genreController.updateGenre)
   .delete(auth('admin'), validate(genreValidation.deleteGenre), genreController.deleteGenre);
+
+router.route('/:slug').get(genreController.getGenreBySlug);
 
 module.exports = router;
