@@ -76,7 +76,7 @@ const getBook = async (id) => {
  * @param {Object} updateBody
  * @returns {Promise<Book>}
  */
-const updateUserById = async (req, bookId, updateBody) => {
+const updateBookById = async (req, bookId, updateBody) => {
   const book = await Book.findById(bookId);
 
   if (!book) {
@@ -88,6 +88,7 @@ const updateUserById = async (req, bookId, updateBody) => {
   }
 
   Object.assign(book, updateBody);
+  await cache.setCache(bookId, book);
   await book.save();
   return book;
 };
@@ -295,7 +296,7 @@ module.exports = {
   createBook,
   getBookById,
   deleteBookById,
-  updateUserById,
+  updateBookById,
   createCheckoutBooks,
   confirmCheckoutBooks,
   getPreviewBook,

@@ -82,6 +82,7 @@ const updateUserById = async (userId, updateBody) => {
   const filteredBody = filterObj(updateBody, 'name', 'email', 'isEmailVerified');
 
   Object.assign(user, filteredBody);
+  await cache.setCache(userId, user);
   await user.save();
   return user;
 };

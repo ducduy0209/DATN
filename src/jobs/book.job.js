@@ -1,6 +1,7 @@
 const kue = require('kue');
 const logger = require('../config/logger');
 const { Book } = require('../models');
+const cache = require('../utils/cache');
 
 const queue = kue.createQueue();
 
@@ -13,6 +14,7 @@ queue.process('increase-access-time-book', async (job, done) => {
       throw new Error('Book not found');
     }
     book.access_times += 1;
+    await cache.setCache(bookId, book);
     await book.save();
 
     logger.info(`Job ${job.id} - increase access time book completed`);

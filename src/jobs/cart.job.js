@@ -1,6 +1,7 @@
 const kue = require('kue');
 const logger = require('../config/logger');
 const { Cart } = require('../models');
+const cache = require('../utils/cache');
 
 const queue = kue.createQueue();
 
@@ -14,6 +15,8 @@ queue.process('add-to-cart', async (job, done) => {
       await existingCart.remove();
     }
     await Cart.create({ ...cartBody, user_id: userId });
+    const carts = await Cart.find({ user_id: userId });
+    await cache.setCache(`${userId}-carts`, carts);
 
     logger.info(`Job ${job.id} - add to cart completed`);
     done();
@@ -28,7 +31,9 @@ queue.process('update-cart', async (job, done) => {
   try {
     const existingCart = await Cart.findOne({ _id: cartId });
     if (existingCart) {
-      await Cart.updateOne({ _id: cartId }, { ...updatedBody });
+      Object.assign(existingCart, updatedBody);
+      await cache.setCache(`${existingCart.user_id}-carts`, existingCart);
+      await existingCart.save();
     }
     logger.info(`Job ${job.id} - update cart completed`);
     done();
@@ -44,6 +49,8 @@ queue.process('check-cart-to-delete', async (job, done) => {
   try {
     const existingCart = await Cart.findOne({ user_id, book_id });
     if (existingCart) {
+      // eslint-disable-next-line camelcase
+      await cache.setCache(`${user_id}-carts`, '', 0);
       await existingCart.remove();
     }
     logger.info(`Job ${job.id} - check cart to delete completed`);
