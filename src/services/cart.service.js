@@ -32,6 +32,8 @@ const updateCartById = (cartId, updatedBody) => createJobPromise('update-cart', 
  */
 const getCarts = async (filter) => {
   const cachedCarts = await cache.getCache(`${filter.user_id}-carts`);
+  console.log(filter.user_id);
+  console.log(cachedCarts);
   if (!cachedCarts) {
     const carts = await Cart.find(filter);
     await cache.setCache(`${filter.user_id}-carts`, carts);
