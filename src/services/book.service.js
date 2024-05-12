@@ -114,7 +114,7 @@ const deleteBookById = async (id) => {
  * @param {array} booksDetails - An array of objects containing bookId and duration
  * @return {void}
  */
-const createCheckoutBooks = async (res, booksDetails) => {
+const createCheckoutBooks = async (res, booksDetails, userId) => {
   let totalAmount = 0;
   const items = await Promise.all(
     booksDetails.map(async ({ bookId, duration, price, referCode = '', couponCode = '' }) => {
@@ -140,7 +140,7 @@ const createCheckoutBooks = async (res, booksDetails) => {
       payment_method: 'paypal',
     },
     redirect_urls: {
-      return_url: 'http://localhost:3000/v1/books/payment-success',
+      return_url: `http://localhost:3000/v1/books/payment-success?userId=${userId}`,
       cancel_url: 'http://localhost:3002/api/payment?status=cancel',
     },
     transactions: [

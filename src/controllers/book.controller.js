@@ -75,7 +75,7 @@ const deleteBook = catchAsync(async (req, res) => {
 
 const createCheckoutBooks = catchAsync(async (req, res) => {
   const { books } = req.body;
-  const link = await bookService.createCheckoutBooks(res, books);
+  const link = await bookService.createCheckoutBooks(res, books, req.user._id);
   res.status(httpStatus.OK).json({
     status: 'success',
     link,
@@ -83,8 +83,8 @@ const createCheckoutBooks = catchAsync(async (req, res) => {
 });
 
 const confirmCheckoutBooks = catchAsync(async (req, res) => {
-  const { paymentId, PayerID } = req.query;
-  await bookService.confirmCheckoutBooks(paymentId, PayerID, req.user._id || req.user.id);
+  const { paymentId, PayerID, userId } = req.query;
+  await bookService.confirmCheckoutBooks(paymentId, PayerID, userId);
 
   // Todo: Redirect to success page
   res.status(httpStatus.OK).redirect('http://localhost:3002/api/payment?status=success');

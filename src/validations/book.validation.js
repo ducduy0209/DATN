@@ -67,6 +67,7 @@ const confirmCheckoutBook = {
     paymentId: Joi.string().required(),
     token: Joi.string().required(),
     PayerID: Joi.string().required(),
+    userId: Joi.string().custom(objectId).required(),
   }),
 };
 

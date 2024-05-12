@@ -22,7 +22,17 @@ const createJobPromise = (type, data) => {
 
 const addToCart = (cartBody, userId) => createJobPromise('add-to-cart', { cartBody, userId });
 
-const updateCartById = (cartId, updatedBody) => createJobPromise('update-cart', { cartId, updatedBody });
+// const updateCartById = (cartId, updatedBody) => createJobPromise('update-cart', { cartId, updatedBody });
+const updateCartById = async (cartId, updatedBody) => {
+  const cart = await Cart.findOne({ _id: cartId });
+  if (!cart) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Item not found in cart');
+  }
+  Object.assign(cart, updatedBody);
+  await cart.save();
+  const carts = await Cart.find({ user_id: cart.user_id });
+  await cache.setCache(`${cart.user_id}-carts`, carts);
+};
 
 /**
  * Retrieves carts based on the provided filter.
