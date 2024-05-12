@@ -73,17 +73,21 @@ const deleteBook = catchAsync(async (req, res) => {
   });
 });
 
-const createCheckoutBooks = (req, res) => {
+const createCheckoutBooks = catchAsync(async (req, res) => {
   const { books } = req.body;
-  bookService.createCheckoutBooks(res, books);
-};
+  const link = await bookService.createCheckoutBooks(res, books);
+  res.status(httpStatus.OK).json({
+    status: 'success',
+    link,
+  });
+});
 
 const confirmCheckoutBooks = catchAsync(async (req, res) => {
   const { paymentId, PayerID } = req.query;
   await bookService.confirmCheckoutBooks(paymentId, PayerID, req.user._id || req.user.id);
 
   // Todo: Redirect to success page
-  res.status(httpStatus.OK).redirect('/');
+  res.status(httpStatus.OK).redirect('localhost:3002/');
 });
 
 const previewBook = catchAsync(async (req, res) => {

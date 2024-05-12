@@ -157,20 +157,28 @@ const createCheckoutBooks = async (res, booksDetails) => {
     ],
   };
 
-  paypal.payment.create(createPaymentJson, function (error, payment) {
-    if (error) {
-      logger.error(error);
-      res.status(500).send({ error: error.toString() });
-    } else {
-      for (let i = 0; i < payment.links.length; i += 1) {
-        if (payment.links[i].rel === 'approval_url') {
-          res.redirect(payment.links[i].href);
-          return;
+  const createPaymentAsync = (createPaymentJson1) => {
+    return new Promise((resolve, reject) => {
+      paypal.payment.create(createPaymentJson1, function (error, payment) {
+        if (error) {
+          logger.error(error);
+          reject(error.toString());
+        } else {
+          // console.log(payment);
+          const data = payment.links.find((item) => item.rel === 'approval_url');
+          if (data) {
+            // console.log(data);
+            resolve(data.href);
+          } else {
+            // eslint-disable-next-line prefer-promise-reject-errors
+            reject('No approval URL found');
+          }
         }
-      }
-      res.status(500).send({ error: 'No approval URL found' });
-    }
-  });
+      });
+    });
+  };
+  const link = await createPaymentAsync(createPaymentJson);
+  return link;
 };
 
 /**
