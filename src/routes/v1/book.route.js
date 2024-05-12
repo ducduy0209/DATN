@@ -17,7 +17,7 @@ router.get('/read/:book_id', auth(), checkAccessRightBook, validate(bookValidati
 router.get('/search/:slug', validate(bookValidation.getBookBySlug), bookController.getBookBySlug);
 
 router.post('/checkout', auth(), validate(bookValidation.createCheckoutBook), bookController.createCheckoutBooks);
-router.get('/payment-success', auth(), validate(bookValidation.confirmCheckoutBook), bookController.confirmCheckoutBooks);
+router.get('/payment-success', validate(bookValidation.confirmCheckoutBook), bookController.confirmCheckoutBooks);
 
 // Note: This will be replaced with a real payment gateway
 router.get('/payment-cancel', (req, res) => res.send('Thanh toán bị hủy'));
