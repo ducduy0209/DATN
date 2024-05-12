@@ -22,9 +22,6 @@ if (config.env !== 'test') {
   app.use(morgan.errorHandler);
 }
 
-// Set up static files from public folder
-app.use(express.static(path.join(__dirname, 'public')));
-
 // set security HTTP headers
 // app.use(helmet());
 
@@ -43,7 +40,17 @@ app.use(compression());
 
 // enable cors
 app.use(cors());
-app.options('*', cors());
+// app.options('*', cors());
+app.use(
+  cors({
+    origin: '*',
+    methods: 'GET,POST,PUT,DELETE',
+    allowedHeaders: 'Content-Type,Authorization',
+  })
+);
+
+// Set up static files from public folder
+app.use(express.static(path.join(__dirname, 'public')));
 
 // jwt authentication
 app.use(passport.initialize());
