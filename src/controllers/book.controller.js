@@ -87,7 +87,7 @@ const confirmCheckoutBooks = catchAsync(async (req, res) => {
   await bookService.confirmCheckoutBooks(paymentId, PayerID, req.user._id || req.user.id);
 
   // Todo: Redirect to success page
-  res.status(httpStatus.OK).redirect('localhost:3002/');
+  res.status(httpStatus.OK).redirect('http://localhost:3002/api/payment?status=success');
 });
 
 const previewBook = catchAsync(async (req, res) => {
