@@ -141,7 +141,7 @@ const createCheckoutBooks = async (res, booksDetails) => {
     },
     redirect_urls: {
       return_url: 'http://localhost:3000/v1/books/payment-success',
-      cancel_url: 'http://localhost:3000/v1/books/payment-cancel',
+      cancel_url: 'http://localhost:3002/api/payment?status=cancel',
     },
     transactions: [
       {
