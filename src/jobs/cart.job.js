@@ -49,9 +49,11 @@ queue.process('check-cart-to-delete', async (job, done) => {
   try {
     const existingCart = await Cart.findOne({ user_id, book_id });
     if (existingCart) {
-      // eslint-disable-next-line camelcase
-      await cache.setCache(`${user_id}-carts`, '', 0);
       await existingCart.remove();
+      // eslint-disable-next-line camelcase
+      const carts = await Cart.find({ user_id });
+      // eslint-disable-next-line camelcase
+      await cache.setCache(`${user_id}-carts`, carts);
     }
     logger.info(`Job ${job.id} - check cart to delete completed`);
     done();

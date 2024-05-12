@@ -1,6 +1,6 @@
-// const httpStatus = require('http-status');
+const httpStatus = require('http-status');
 const { Cart } = require('../models');
-// const ApiError = require('../utils/ApiError');
+const ApiError = require('../utils/ApiError');
 const queue = require('../jobs/cart.job');
 const cache = require('../utils/cache');
 
@@ -48,7 +48,12 @@ const getCarts = async (filter) => {
  * @return {Promise} The deleted cart
  */
 const deleteCartById = async (id) => {
-  return Cart.findByIdAndDelete(id);
+  const cart = await Cart.findById(id);
+  if (!cart) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Item not found in cart');
+  }
+  await cache.setCache(`${cart.user_id}-carts`, null, 1);
+  await cart.remove();
 };
 
 module.exports = {
