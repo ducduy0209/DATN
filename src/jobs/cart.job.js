@@ -32,8 +32,9 @@ queue.process('update-cart', async (job, done) => {
     const existingCart = await Cart.findOne({ _id: cartId });
     if (existingCart) {
       Object.assign(existingCart, updatedBody);
-      await cache.setCache(`${existingCart.user_id}-carts`, existingCart);
       await existingCart.save();
+      const carts = await Cart.find({ user_id: existingCart.user_id });
+      await cache.setCache(`${existingCart.user_id}-carts`, carts);
     }
     logger.info(`Job ${job.id} - update cart completed`);
     done();
