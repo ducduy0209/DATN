@@ -6,6 +6,7 @@ module.exports.Cart = require('./cart.model');
 module.exports.Genre = require('./genre.model');
 module.exports.Banner = require('./banner.model');
 module.exports.Coupon = require('./coupon.model');
+module.exports.Analyst = require('./analyst.model');
 module.exports.CouponUsage = require('./couponUsage.model');
 module.exports.Affiliate = require('./affiliate.model');
 module.exports.BorrowRecord = require('./borrowRecord.model');

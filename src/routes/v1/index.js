@@ -4,6 +4,7 @@ const userRoute = require('./user.route');
 const bookRoute = require('./book.route');
 const reviewRoute = require('./review.route');
 const cartRoute = require('./cart.route');
+const analystRoute = require('./analyst.route');
 const genreRoute = require('./genre.route');
 const bannerRoute = require('./banner.route');
 const couponRoute = require('./coupon.route');
@@ -54,6 +55,10 @@ const defaultRoutes = [
   {
     path: '/coupons',
     route: couponRoute,
+  },
+  {
+    path: '/analysts',
+    route: analystRoute,
   },
 ];
 

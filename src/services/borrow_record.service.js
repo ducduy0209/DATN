@@ -3,6 +3,7 @@ const { BorrowRecord } = require('../models');
 const { Book } = require('../models');
 const ApiError = require('../utils/ApiError');
 const cache = require('../utils/cache');
+const { analystJob } = require('../jobs');
 
 /**
  * Get all records based on the provided filter and options.
@@ -36,6 +37,7 @@ const createRecord = async (recordBody) => {
   book.amount_borrowed += 1;
   await book.save();
   await cache.setCache(recordBody.book_id, book);
+  analystJob.create('add-to-analyst', { record }).save();
   return record;
 };
 
