@@ -1,3 +1,5 @@
+import slugify from 'slugify';
+
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
 const { enumDuration } = require('../constants');
@@ -98,11 +100,10 @@ bookSchema.statics.isISBNTaken = async function (isbn) {
 };
 
 bookSchema.pre('save', function (next) {
-  this.slug = this.title
-    .replace(/[^\w\s]/gi, '')
-    .trim()
-    .replace(/\s+/g, '-')
-    .toLowerCase();
+  this.slug = slugify(this.title, {
+    lower: true,
+    remove: /[*+~.()'"!:@]/g,
+  });
   const oneMonthPrice = this.prices.find((price) => price.duration === '1 month');
   if (oneMonthPrice) {
     this.price = oneMonthPrice.price;
