@@ -15,10 +15,7 @@ const createJobPromise = (type, data) => {
 const register = catchAsync(async (req, res) => {
   const user = await userService.createUser(req.body);
   const tokens = await tokenService.generateAuthTokens(user);
-  await Promise.all([
-    emailJob.create('send-verify-email', { user }).save(),
-    affiliateJob.create('create-affiliate-table', { user }).save(),
-  ]);
+  affiliateJob.create('create-affiliate-table', { user }).save();
   res.status(httpStatus.CREATED).json({
     status: 'success',
     data: { user, tokens },
