@@ -82,6 +82,10 @@ const bookSchema = new mongoose.Schema(
       type: Number,
       default: 4.5,
     },
+    rating_count: {
+      type: Number,
+      default: 0,
+    },
     // price of duration 1 month to sort
     price: {
       type: Number,

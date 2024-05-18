@@ -3,12 +3,14 @@ const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { reviewService } = require('../services');
+const { bookJob } = require('../jobs');
 
 const createReview = catchAsync(async (req, res) => {
   if (req.access_book.status === 'denied') {
     throw new ApiError(httpStatus.FORBIDDEN, 'Please buy/borrow this book before making a review');
   }
   const review = await reviewService.createReview(req.body, req.user._id);
+  bookJob.create('update-rating-book', { review }).save();
   res.status(httpStatus.CREATED).json({
     status: 'success',
     data: review,
