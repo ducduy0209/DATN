@@ -62,8 +62,8 @@ const deleteCartById = async (id) => {
   if (!cart) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Item not found in cart');
   }
-  await cache.setCache(`${cart.user_id}-carts`, null, 1);
   await cart.remove();
+  await cache.delCache(`${cart.user_id}-carts`);
 };
 
 module.exports = {

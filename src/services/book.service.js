@@ -103,6 +103,7 @@ const deleteBookById = async (id) => {
   if (!book) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
   }
+  await cache.delCache(id);
   await book.remove();
   return book;
 };

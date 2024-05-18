@@ -107,6 +107,7 @@ const deleteUserById = async (userId) => {
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
+  await cache.delCache(userId);
   await user.remove();
   return user;
 };

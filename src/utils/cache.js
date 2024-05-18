@@ -22,6 +22,7 @@ client.on('error', (err) => logger.error('Redis Client Error', err));
 // Convert callback-based Redis client methods to Promise-based
 const getAsync = promisify(client.get).bind(client);
 const setAsync = promisify(client.set).bind(client);
+const delAsync = promisify(client.del).bind(client);
 
 /**
  * Store data in the cache
@@ -43,7 +44,17 @@ const getCache = async (key) => {
   return data ? JSON.parse(data) : null;
 };
 
+/**
+ * Delete data from the cache
+ * @param {string} key - The cache key
+ * @returns {Promise<void>}
+ */
+const delCache = async (key) => {
+  await delAsync(key.toString());
+};
+
 module.exports = {
   setCache,
   getCache,
+  delCache,
 };
