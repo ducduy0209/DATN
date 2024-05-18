@@ -7,7 +7,7 @@ const { bookJob } = require('../jobs');
 
 const createReview = catchAsync(async (req, res) => {
   if (req.access_book.status === 'denied') {
-    throw new ApiError(httpStatus.FORBIDDEN, 'Please buy/borrow this book before making a review');
+    throw new ApiError(httpStatus.FORBIDDEN, 'Bạn cần mua/mượn sách trước khi đánh giá');
   }
   const review = await reviewService.createReview(req.body, req.user._id);
   bookJob.create('update-rating-book', { review }).save();

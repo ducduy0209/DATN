@@ -12,7 +12,12 @@ const ApiError = require('../utils/ApiError');
 const createReview = async (reviewBody, userId) => {
   const review = await Review.findOne({ user_id: userId, book_id: reviewBody.book_id });
   if (review) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'You have already reviewed this book');
+    if (review.isAdjusted) {
+      throw new ApiError(httpStatus.UNAUTHORIZED, 'Mỗi đánh giá chỉ được sửa 1 lần!');
+    }
+    Object.assign(review, reviewBody, { isAdjusted: true });
+    await review.save();
+    return review;
   }
   return Review.create({ ...reviewBody, user_id: userId });
 };
