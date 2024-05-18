@@ -8,7 +8,7 @@ const configFilter = ({ search = '', language = '', fromPrice = 0, toPrice = 0, 
   const filter = {};
 
   if (search) {
-    filter.$text = { $search: `/${search.trim()}/i` };
+    filter.$or = [{ title: new RegExp(search, 'i') }, { author: new RegExp(search, 'i') }];
   }
 
   if (language) {
