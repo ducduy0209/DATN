@@ -1,3 +1,4 @@
+const slugify = require('slugify');
 const mongoose = require('mongoose');
 const { toJSON } = require('./plugins');
 
@@ -24,11 +25,10 @@ const genreSchema = new mongoose.Schema(
 genreSchema.plugin(toJSON);
 
 genreSchema.pre('save', function (next) {
-  this.slug = this.title
-    .replace(/[^\w\s]/gi, '')
-    .trim()
-    .replace(/\s+/g, '-')
-    .toLowerCase();
+  this.slug = slugify(this.name, {
+    lower: true,
+    remove: /[*+~.()'"!:@]/g,
+  });
   next();
 });
 

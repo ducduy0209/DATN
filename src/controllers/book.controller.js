@@ -4,31 +4,34 @@ const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { bookService } = require('../services');
 
-const configFilter = (filter) => {
-  const { search = '', language = '', fromPrice = 0, toPrice = 0, slug = '' } = filter;
-  const adjustedFilter = {};
+const configFilter = ({ search = '', language = '', fromPrice = 0, toPrice = 0, slug = '' }) => {
+  const filter = {};
+
   if (search) {
-    adjustedFilter.$text = { $search: `/${search.trim()}/i` };
+    filter.$text = { $search: `/${search.trim()}/i` };
   }
 
   if (language) {
-    adjustedFilter.language = language;
+    filter.language = language;
   }
 
   if (slug) {
-    adjustedFilter.slug = slug;
+    filter.slug = slug;
   }
 
-  if (+fromPrice !== 0 || +toPrice !== 0) {
-    adjustedFilter.prices = {
-      $elemMatch: {
-        duration: '1 month',
-        price: { $gte: +fromPrice, $lte: +toPrice },
-      },
-    };
+  if (fromPrice || toPrice) {
+    filter.price = {};
+
+    if (fromPrice) {
+      filter.price.$gte = fromPrice;
+    }
+
+    if (toPrice) {
+      filter.price.$lte = toPrice;
+    }
   }
 
-  return adjustedFilter;
+  return filter;
 };
 
 const getBooks = catchAsync(async (req, res) => {

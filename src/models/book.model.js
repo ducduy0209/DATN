@@ -1,5 +1,4 @@
-import slugify from 'slugify';
-
+const slugify = require('slugify');
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
 const { enumDuration } = require('../constants');
