@@ -6,7 +6,7 @@ const createCart = {
     book_id: Joi.string().custom(objectId).required(),
     duration: Joi.string().required(),
     price: Joi.number().required(),
-    refer_code: Joi.string(),
+    refer_code: Joi.string().allow(null),
   }),
   params: Joi.object().keys({
     book_id: Joi.string().custom(objectId),
