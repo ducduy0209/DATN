@@ -339,6 +339,7 @@ const getBookBySlug = async (slug) => {
 
 const increaseView = async (bookId) => {
   await Book.updateOne({ _id: bookId }, { $inc: { access_times: 1 } });
+  await cache.delCache(bookId);
 };
 
 module.exports = {
