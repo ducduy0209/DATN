@@ -12,7 +12,7 @@ queue.process('send-verify-email', async (job, done) => {
     logger.info(`Job ${job.id} - send verify email completed`);
     done();
   } catch (error) {
-    logger.error(`Error processing job: update cart`, error);
+    logger.error(`Error processing job: send verify email`, error);
     done(error);
   }
 });
@@ -21,11 +21,12 @@ queue.process('send-forgot-password', async (job, done) => {
   const { email } = job.data;
   try {
     const token = await tokenService.generateResetPasswordToken(email);
+    console.log({ token });
     await emailService.sendResetPasswordEmail(email, token);
     logger.info(`Job ${job.id} - send verify email completed`);
     done();
   } catch (error) {
-    logger.error(`Error processing job: update cart`, error);
+    logger.error(`Error processing job: send forgot password`, error);
     done(error);
   }
 });

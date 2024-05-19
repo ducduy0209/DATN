@@ -38,7 +38,7 @@ queue.process('update-rating-book', async (job, done) => {
     } else {
       book.rating = review.rating;
     }
-    book.rating_count += 1;
+    if (!review.isAdjusted) book.rating_count += 1;
     await book.save();
     await cache.setCache(review.book_id, book);
 
