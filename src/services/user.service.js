@@ -187,7 +187,11 @@ const getMyBooks = async (userId, options) => {
     books.results.map(async (book) => {
       const transaction = await getTransactionRecord(book._id, userId);
       const accessStatus = transaction ? `${transaction.due_date ? 'view' : 'download'}` : 'denied';
-      return { ...book.toObject(), access_status: accessStatus };
+      return {
+        ...book.toObject(),
+        id: book._id,
+        access_status: accessStatus,
+      };
     })
   );
   return books;
