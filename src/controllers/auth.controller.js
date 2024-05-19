@@ -3,15 +3,6 @@ const catchAsync = require('../utils/catchAsync');
 const { authService, userService, tokenService } = require('../services');
 const { emailJob, affiliateJob } = require('../jobs');
 
-const createJobPromise = (type, data) => {
-  return new Promise((resolve, reject) => {
-    const job = emailJob.create(type, data).save((err) => {
-      if (err) reject(err);
-      else resolve(job.id);
-    });
-  });
-};
-
 const register = catchAsync(async (req, res) => {
   const user = await userService.createUser(req.body);
   const tokens = await tokenService.generateAuthTokens(user);
@@ -48,7 +39,7 @@ const refreshTokens = catchAsync(async (req, res) => {
 });
 
 const forgotPassword = catchAsync(async (req, res) => {
-  createJobPromise('send-forgot-password', { email: req.body.email });
+  emailJob.create('send-forgot-password', { email: req.body.email }).save();
   res.status(httpStatus.NO_CONTENT).json({
     status: 'success',
   });
@@ -62,7 +53,7 @@ const resetPassword = catchAsync(async (req, res) => {
 });
 
 const sendVerificationEmail = catchAsync(async (req, res) => {
-  createJobPromise('send-verify-email', { user: req.user });
+  emailJob.create('send-verify-email', { user: req.user }).save();
   res.status(httpStatus.NO_CONTENT).json({
     status: 'success',
   });
