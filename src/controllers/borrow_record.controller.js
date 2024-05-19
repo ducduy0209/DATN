@@ -6,6 +6,7 @@ const { borrowRecordService } = require('../services');
 
 const getAllRecords = catchAsync(async (req, res) => {
   if (req.user.role === 'user') req.params.user_id = req.user._id;
+  if (!req.query.sortby) req.query.sortBy = 'borrow_date:desc';
   const filter = pick(req.params, ['book_id', 'user_id']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await borrowRecordService.getAllRecords(filter, options);
