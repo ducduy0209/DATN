@@ -15,7 +15,7 @@ const cache = require('../utils/cache');
 const loginUserWithEmailAndPassword = async (email, password) => {
   const user = await userService.getUserByEmail(email);
   if (!user || !(await user.isPasswordMatch(password))) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Tài khoản hoặc mật khẩu thanh toán');
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Tài khoản hoặc mật khẩu không chính xác');
   }
 
   if (!user.isActive) {
