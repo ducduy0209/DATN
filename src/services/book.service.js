@@ -121,7 +121,7 @@ const createCheckoutBooks = async (res, booksDetails, userId) => {
     booksDetails.map(async ({ bookId, duration, price, referCode = '', couponCode = '' }) => {
       const book = await Book.findOne({ _id: bookId });
       if (!book) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
+        throw new ApiError(httpStatus.NOT_FOUND, 'Sách không tồn tại');
       }
 
       if (couponCode) {
@@ -180,7 +180,7 @@ const createCheckoutBooks = async (res, booksDetails, userId) => {
             resolve(data.href);
           } else {
             // eslint-disable-next-line prefer-promise-reject-errors
-            reject('No approval URL found');
+            reject('Không có đường dẫn thanh toán hợp lệ');
           }
         }
       });
@@ -245,7 +245,7 @@ const confirmCheckoutBooks = async (paymentId, PayerID, userId) => {
 const getPreviewBook = async (bookId) => {
   const book = await getBookById(bookId);
   if (!book) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Sách không tồn tại');
   }
   const originalPdfPath = path.join(__dirname, '../', 'assets', `${book.digital_content}`);
   // eslint-disable-next-line security/detect-non-literal-fs-filename
@@ -274,13 +274,13 @@ const getPreviewBook = async (bookId) => {
 const readBook = async (bookId) => {
   const book = await getBookById(bookId);
   if (!book) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Sách không tồn tại');
   }
   const originalPdfPath = path.join(__dirname, '../assets', `${book.digital_content}`);
 
   // Ensure the path exists and is a file
   if (!fs.existsSync(originalPdfPath) || !fs.lstatSync(originalPdfPath).isFile()) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Book file not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Sách không tồn tại');
   }
 
   // eslint-disable-next-line security/detect-non-literal-fs-filename
@@ -300,7 +300,7 @@ const readBook = async (bookId) => {
 const downloadBook = async (bookId) => {
   const book = await getBookById(bookId);
   if (!book) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Sách không tồn tại');
   }
 
   const originalPdfPath = path.join(__dirname, '../assets', `${book.digital_content}`);

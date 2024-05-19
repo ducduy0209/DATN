@@ -26,7 +26,7 @@ const addToCart = (cartBody, userId) => createJobPromise('add-to-cart', { cartBo
 const updateCartById = async (cartId, updatedBody) => {
   const cart = await Cart.findOne({ _id: cartId });
   if (!cart) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Item not found in cart');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Sản phẩm này không còn tồn tại');
   }
   Object.assign(cart, updatedBody);
   await cart.save();
@@ -60,7 +60,7 @@ const getCarts = async (filter) => {
 const deleteCartById = async (id) => {
   const cart = await Cart.findById(id);
   if (!cart) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Item not found in cart');
+    throw new ApiError(httpStatus.NOT_FOUND, 'ISách không tồn tại');
   }
   await cart.remove();
   await cache.delCache(`${cart.user_id}-carts`);

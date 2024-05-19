@@ -8,7 +8,7 @@ const createCart = catchAsync(async (req, res) => {
   await cartService.addToCart(req.body, req.user._id);
   res.status(httpStatus.CREATED).json({
     status: 'success',
-    message: 'Successfully added cart',
+    message: 'Thêm vào giỏ hàng thành công',
   });
 });
 

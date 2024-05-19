@@ -72,13 +72,15 @@ const deleteCoupon = async (couponId) => {
 
 const applyCoupon = async (userId, { price, code }) => {
   const coupon = await Coupon.findOne({ code });
-  if (!coupon) throw new ApiError(httpStatus.NOT_FOUND, 'Coupon not found');
-  if (coupon.expiredAt && coupon.expiredAt < new Date()) throw new ApiError(httpStatus.BAD_REQUEST, 'Coupon is expired');
-  if (price < coupon.minimum_value) throw new ApiError(httpStatus.BAD_REQUEST, 'Coupon is below minimum value');
-  if (coupon.remaining_amount < 1) throw new ApiError(httpStatus.BAD_REQUEST, 'Coupon is out of stock');
+  if (!coupon) throw new ApiError(httpStatus.NOT_FOUND, 'Mã giảm giá không tồn tại');
+  if (coupon.expiredAt && coupon.expiredAt < new Date())
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Mã giảm giá đã hết hạn');
+  if (price < coupon.minimum_value)
+    throw new ApiError(httpStatus.BAD_REQUEST, `Giá tiền phải lớn hơn ${coupon.minimum_value}`);
+  if (coupon.remaining_amount < 1) throw new ApiError(httpStatus.BAD_REQUEST, 'Mã giảm giá đã hết số lượng sử dụng');
   const usage = await CouponUsage.findOne({ code, userId });
   if (usage && usage.numberOfUses >= coupon.maxPerPerson)
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Coupon is already used');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Bạn đã sử dụng hết lượt của mã giảm giá này');
   const priceAfterSale = price - (price * coupon.percent) / 100;
   return { price, priceAfterSale };
 };

@@ -15,13 +15,14 @@ const cache = require('../utils/cache');
 const loginUserWithEmailAndPassword = async (email, password) => {
   const user = await userService.getUserByEmail(email);
   if (!user || !(await user.isPasswordMatch(password))) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Tài khoản hoặc mật khẩu thanh toán');
   }
 
   if (!user.isActive) {
     throw new ApiError(
       httpStatus.UNAUTHORIZED,
-      'Your account is inactive. Please contact the administrator to active again.'
+      // 'Your account is inactive. Please contact the administrator to active again.'
+      'Tài khoản của bạn đã bị xoá. Hãy liên hệ với admin để kích hoạt lại'
     );
   }
 

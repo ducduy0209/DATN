@@ -62,7 +62,7 @@ const deleteAffiliateById = async (affiliateId) => {
 const updateAffiliate = async (affiliateId, affiliateBody) => {
   const affiliate = await Affiliate.findOne({ _id: affiliateId });
   if (affiliate.isUpdatedReceiver) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Affiliate reciever already updated');
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Email nhận tiền hoa hồng chỉ được cập nhật 1 lần');
   }
   Object.assign(affiliate, affiliateBody, { isUpdatedReceiver: true });
   return affiliate.save();

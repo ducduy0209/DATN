@@ -73,11 +73,11 @@ const filterObj = (obj, ...allowedFields) => {
 const updateUserById = async (userId, updateBody) => {
   const user = await User.findById(userId);
   if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Người dùng không tồn tại');
   }
 
   if (updateBody.email && (await User.isEmailTaken(updateBody.email, userId))) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Email đã được sử dụng');
   }
 
   const filteredBody = filterObj(updateBody, 'name', 'email', 'isEmailVerified', 'image');
@@ -90,7 +90,7 @@ const updateUserById = async (userId, updateBody) => {
 const updateUserPasswordById = async (userId, password) => {
   const user = await User.findById(userId);
   if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Người dùng không tồn tại');
   }
   user.password = password;
   await cache.setCache(userId, user);
@@ -139,7 +139,7 @@ const updateMyPasswordById = async (userId, updateBody) => {
   const user = await User.findById(userId);
 
   if (!user || !(await user.isPasswordMatch(currentPassword))) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect current password');
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Mật khẩu hiện tại không chính xác');
   }
 
   user.password = newPassword;
@@ -160,7 +160,7 @@ const likeBook = async (userId, bookId) => {
         $pull: { favorite_books: bookId },
       }
     );
-    return 'The book has been removed from your favorites';
+    return 'Đã xoá sách khỏi danh sách yêu thích';
   }
   await User.updateOne(
     { _id: userId },
@@ -168,7 +168,7 @@ const likeBook = async (userId, bookId) => {
       $push: { favorite_books: bookId },
     }
   );
-  return 'The book has been added to your favorites';
+  return 'Đã thêm sách vào danh sách yêu thích';
 };
 
 /**
