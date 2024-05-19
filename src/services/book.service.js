@@ -314,6 +314,10 @@ const getBookBySlug = async (slug) => {
   return Book.findOne({ slug });
 };
 
+const increaseView = async (bookId) => {
+  await Book.updateOne({ _id: bookId }, { $inc: { access_times: 1 } });
+};
+
 module.exports = {
   getBook,
   queryBooks,
@@ -327,4 +331,5 @@ module.exports = {
   readBook,
   getBooksWithGenres,
   getBookBySlug,
+  increaseView,
 };

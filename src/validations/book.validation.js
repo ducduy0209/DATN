@@ -94,6 +94,12 @@ const getBookBySlug = {
   }),
 };
 
+const increaseView = {
+  params: Joi.object().keys({
+    bookId: Joi.string().custom(objectId).required(),
+  }),
+};
+
 module.exports = {
   getBooks,
   createBook,
@@ -105,4 +111,5 @@ module.exports = {
   readBook,
   getBooksWithGenres,
   getBookBySlug,
+  increaseView,
 };

@@ -18,6 +18,7 @@ router.get('/search/:slug', validate(bookValidation.getBookBySlug), bookControll
 
 router.post('/checkout', auth(), validate(bookValidation.createCheckoutBook), bookController.createCheckoutBooks);
 router.get('/payment-success', validate(bookValidation.confirmCheckoutBook), bookController.confirmCheckoutBooks);
+router.get('/increase-view/:bookId', validate(bookValidation.increaseView), bookController.increaseView);
 
 router
   .route('/')

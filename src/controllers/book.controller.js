@@ -131,6 +131,13 @@ const getBookBySlug = catchAsync(async (req, res) => {
   });
 });
 
+const increaseView = catchAsync(async (req, res) => {
+  await bookService.increaseView(req.params.bookId);
+  res.status(httpStatus.OK).json({
+    status: 'success',
+  });
+});
+
 module.exports = {
   getBooks,
   createBook,
@@ -143,4 +150,5 @@ module.exports = {
   readBook,
   getBooksWithGenres,
   getBookBySlug,
+  increaseView,
 };
