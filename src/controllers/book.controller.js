@@ -107,11 +107,23 @@ const readBook = catchAsync(async (req, res) => {
     throw new ApiError(httpStatus.FORBIDDEN, 'You have not permission to access this book');
   }
 
-  // Todo: Implement when build UI (have 2 status: view - borrow and download - buy)
   res.setHeader('Content-Type', 'application/pdf');
   res.setHeader('Content-Disposition', 'inline');
 
   stream.pipe(res);
+});
+
+const downloadBook = catchAsync(async (req, res) => {
+  if (req.access_book.status === 'denied' || req.access_book.status === 'view') {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Bạn không thể tải sách về!');
+  }
+
+  const pdfBytes = await bookService.downloadBook(req.params.book_id);
+  const book = await bookService.getBookById(req.params.book_id);
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Length', pdfBytes.length);
+  res.setHeader('Content-Disposition', `attachment; filename=${book.slug}.pdf`);
+  res.end(pdfBytes);
 });
 
 const getBooksWithGenres = catchAsync(async (req, res) => {
@@ -151,4 +163,5 @@ module.exports = {
   getBooksWithGenres,
   getBookBySlug,
   increaseView,
+  downloadBook,
 };

@@ -77,6 +77,12 @@ const readBook = {
   }),
 };
 
+const downloadBook = {
+  params: Joi.object().keys({
+    book_id: Joi.string().custom(objectId).required(),
+  }),
+};
+
 const getBooksWithGenres = {
   query: Joi.object().keys({
     sortBy: Joi.string(),
@@ -111,5 +117,6 @@ module.exports = {
   readBook,
   getBooksWithGenres,
   getBookBySlug,
+  downloadBook,
   increaseView,
 };

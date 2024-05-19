@@ -2,6 +2,7 @@ const httpStatus = require('http-status');
 const { User, Book, BorrowRecord } = require('../models');
 const ApiError = require('../utils/ApiError');
 const cache = require('../utils/cache');
+const { getTransactionRecord } = require('./borrow_record.service');
 
 /**
  * Create a user
@@ -181,7 +182,15 @@ const getMyBooks = async (userId, options) => {
   const records = await BorrowRecord.find({ user_id: userId, $or: [{ due_date: null }, { due_date: { $gt: new Date() } }] });
   const bookIds = records.map((record) => record.book_id);
 
-  return Book.paginate({ _id: { $in: bookIds } }, options);
+  const books = await Book.paginate({ _id: { $in: bookIds } }, options);
+  books.results = await Promise.all(
+    books.results.map(async (book) => {
+      const transaction = await getTransactionRecord(book._id, userId);
+      const accessStatus = transaction ? `${transaction.due_date ? 'view' : 'download'}` : 'denied';
+      return { ...book.toObject(), access_status: accessStatus };
+    })
+  );
+  return books;
 };
 
 module.exports = {

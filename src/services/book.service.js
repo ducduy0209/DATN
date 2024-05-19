@@ -277,7 +277,6 @@ const readBook = async (bookId) => {
     throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
   }
   const originalPdfPath = path.join(__dirname, '../assets', `${book.digital_content}`);
-  console.log({ originalPdfPath });
 
   // Ensure the path exists and is a file
   if (!fs.existsSync(originalPdfPath) || !fs.lstatSync(originalPdfPath).isFile()) {
@@ -288,6 +287,30 @@ const readBook = async (bookId) => {
   const stream = fs.createReadStream(originalPdfPath);
 
   return stream;
+};
+
+/**
+ * Asynchronously downloads a book by its ID.
+ *
+ * @param {string} bookId - The ID of the book to be downloaded.
+ * @return {Promise<Buffer>} A promise that resolves to a Buffer containing the book's content.
+ * @throws {ApiError} If the book is not found.
+ * @throws {ApiError} If there is an error reading the book's content.
+ */
+const downloadBook = async (bookId) => {
+  const book = await getBookById(bookId);
+  if (!book) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
+  }
+
+  const originalPdfPath = path.join(__dirname, '../assets', `${book.digital_content}`);
+  try {
+    const pdfBytes = await fs.readFileSync(originalPdfPath);
+    return pdfBytes;
+  } catch (error) {
+    console.log({ error });
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Không thể tải sách!');
+  }
 };
 
 /**
@@ -332,4 +355,5 @@ module.exports = {
   getBooksWithGenres,
   getBookBySlug,
   increaseView,
+  downloadBook,
 };
