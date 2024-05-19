@@ -2,7 +2,7 @@ const httpStatus = require('http-status');
 const { PDFDocument } = require('pdf-lib');
 const fs = require('fs');
 const path = require('path');
-const { Book, Genre } = require('../models');
+const { Book, Genre, Coupon } = require('../models');
 const paypal = require('../config/paypal');
 const logger = require('../config/logger');
 const ApiError = require('../utils/ApiError');
@@ -124,7 +124,15 @@ const createCheckoutBooks = async (res, booksDetails, userId) => {
         throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
       }
 
-      totalAmount += price;
+      if (couponCode) {
+        const coupon = await Coupon.findOne({ code: couponCode });
+        if (coupon) {
+          totalAmount += price - (price * coupon.percent) / 100;
+        }
+      } else {
+        totalAmount += price;
+      }
+
       return {
         name: book.title,
         sku: `${bookId}_${duration}_${referCode}_${couponCode}`,
@@ -268,7 +276,14 @@ const readBook = async (bookId) => {
   if (!book) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
   }
-  const originalPdfPath = path.join(__dirname, '../', 'assets', `${book.digital_content}`);
+  const originalPdfPath = path.join(__dirname, '../assets', `${book.digital_content}`);
+  console.log({ originalPdfPath });
+
+  // Ensure the path exists and is a file
+  if (!fs.existsSync(originalPdfPath) || !fs.lstatSync(originalPdfPath).isFile()) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book file not found');
+  }
+
   // eslint-disable-next-line security/detect-non-literal-fs-filename
   const stream = fs.createReadStream(originalPdfPath);
 

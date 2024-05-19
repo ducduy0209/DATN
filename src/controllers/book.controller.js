@@ -101,7 +101,7 @@ const previewBook = catchAsync(async (req, res) => {
 });
 
 const readBook = catchAsync(async (req, res) => {
-  const stream = bookService.readBook(req.params.book_id);
+  const stream = await bookService.readBook(req.params.book_id);
 
   if (req.access_book.status === 'denied') {
     throw new ApiError(httpStatus.FORBIDDEN, 'You have not permission to access this book');
