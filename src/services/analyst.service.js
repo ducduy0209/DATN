@@ -61,8 +61,6 @@ const getAnalysts = async (time = 'today') => {
     totalRevenue += recordHistory[i].price;
   }
 
-  console.log({ totalRevenue, totalBooks: recordHistory.length, totalUsers: userAnalyst });
-
   return {
     totalRevenue,
     totalBooks: recordHistory.length,
