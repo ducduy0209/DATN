@@ -37,9 +37,10 @@ const getAffiliate = catchAsync(async (req, res) => {
 });
 
 const updateAffiliate = catchAsync(async (req, res) => {
-  affiliateService.clickAffiliate(req.params.code);
+  const affiliate = await affiliateService.updateAffiliate(req.params.affiliateId);
   res.status(httpStatus.OK).json({
     status: 'success',
+    data: affiliate,
   });
 });
 

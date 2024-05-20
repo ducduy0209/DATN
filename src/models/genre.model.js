@@ -1,6 +1,6 @@
 const slugify = require('slugify');
 const mongoose = require('mongoose');
-const { toJSON } = require('./plugins');
+const { toJSON, paginate } = require('./plugins');
 
 const genreSchema = new mongoose.Schema(
   {
@@ -23,6 +23,7 @@ const genreSchema = new mongoose.Schema(
 );
 
 genreSchema.plugin(toJSON);
+genreSchema.plugin(paginate);
 
 genreSchema.pre('save', function (next) {
   this.slug = slugify(this.name, {

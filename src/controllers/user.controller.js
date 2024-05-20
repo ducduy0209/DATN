@@ -4,6 +4,24 @@ const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { userService, tokenService } = require('../services');
 
+const configFilter = ({ role = '', name = '', email = '' }) => {
+  const filter = {};
+
+  if (name) {
+    filter.name = new RegExp(name, 'i');
+  }
+
+  if (email) {
+    filter.email = email;
+  }
+
+  if (role) {
+    filter.role = role;
+  }
+
+  return filter;
+};
+
 const createUser = catchAsync(async (req, res) => {
   const user = await userService.createUser(req.body);
   res.status(httpStatus.CREATED).json({
@@ -13,7 +31,8 @@ const createUser = catchAsync(async (req, res) => {
 });
 
 const getUsers = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['name', 'role']);
+  const originalFilter = pick(req.query, ['name', 'role', 'email']);
+  const filter = configFilter(originalFilter);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await userService.queryUsers(filter, options);
   res.status(httpStatus.OK).json({

@@ -1,5 +1,5 @@
 // const httpStatus = require('http-status');
-// const pick = require('../utils/pick');
+const pick = require('../utils/pick');
 // const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { genreService } = require('../services');
@@ -13,7 +13,12 @@ const createGenre = catchAsync(async (req, res) => {
 });
 
 const getGenres = catchAsync(async (req, res) => {
-  const result = await genreService.getGenres();
+  if (!req.query.sortBy) {
+    req.query.sortBy = 'priority:desc';
+  }
+  const filter = pick(req.query, ['name', 'role', 'email']);
+  const options = pick(req.query, ['sortBy', 'limit', 'page']);
+  const result = await genreService.getGenres(filter, options);
   res.status(200).json({
     status: 'success',
     data: result,

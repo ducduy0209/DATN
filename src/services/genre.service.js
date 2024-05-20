@@ -6,8 +6,8 @@ const createGenre = async (genreBody) => {
   return Genre.create(genreBody);
 };
 
-const getGenres = async () => {
-  return Genre.find().sort({ priority: -1 });
+const getGenres = async (filter, options) => {
+  return Genre.paginate(filter, options);
 };
 
 const getGenreById = async (id) => {
