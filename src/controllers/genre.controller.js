@@ -16,7 +16,11 @@ const getGenres = catchAsync(async (req, res) => {
   if (!req.query.sortBy) {
     req.query.sortBy = 'priority:desc';
   }
-  const filter = pick(req.query, ['name', 'role', 'email']);
+  const filter = {};
+  const originalFilter = pick(req.query, ['name']);
+  if (originalFilter.name) {
+    filter.name = new RegExp(originalFilter.name, 'i');
+  }
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await genreService.getGenres(filter, options);
   res.status(200).json({
