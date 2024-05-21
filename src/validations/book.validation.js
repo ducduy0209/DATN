@@ -25,6 +25,7 @@ const createBook = {
     cover_image: Joi.string().required(),
     total_book_pages: Joi.number().required(),
     digital_content: Joi.string().required(),
+    language: Joi.string().required(),
     prices: Joi.array().required(),
   }),
 };
@@ -41,7 +42,8 @@ const updateBook = {
     author: Joi.string(),
     published_date: Joi.date(),
     isbn: Joi.string(),
-    genre: Joi.array(),
+    genres: Joi.array(),
+    language: Joi.string(),
     summary: Joi.string().trim(),
     cover_image: Joi.string(),
     total_book_pages: Joi.number(),
