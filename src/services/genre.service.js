@@ -23,7 +23,7 @@ const updateGenreById = async (id, updatedData) => {
   if (!genre) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Genre not found');
   }
-  return Genre.updateOnde({ _id: id }, updatedData);
+  return Genre.updateOne({ _id: id }, updatedData, { new: true });
 };
 
 const deleteGenreById = async (id) => {
