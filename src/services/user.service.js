@@ -80,7 +80,7 @@ const updateUserById = async (userId, updateBody) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email đã được sử dụng');
   }
 
-  const filteredBody = filterObj(updateBody, 'name', 'email', 'isEmailVerified', 'image');
+  const filteredBody = filterObj(updateBody, 'name', 'email', 'isEmailVerified', 'image', 'role', 'isActive');
   Object.assign(user, filteredBody);
   await user.save();
   await cache.setCache(userId, user);
