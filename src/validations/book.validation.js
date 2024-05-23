@@ -87,6 +87,9 @@ const downloadBook = {
 
 const getBooksWithGenres = {
   query: Joi.object().keys({
+    language: Joi.string(),
+    fromPrice: Joi.number().integer(),
+    toPrice: Joi.number().integer(),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
