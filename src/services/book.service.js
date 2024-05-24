@@ -322,9 +322,10 @@ const downloadBook = async (bookId) => {
  * @param {number} options.page - The current page number.
  * @return {Promise<Object>} A promise that resolves to the paginated books.
  */
-const getBooksWithGenres = async (genre, options) => {
+const getBooksWithGenres = async (genre, filter, options) => {
   const genreInfo = await Genre.findOne({ slug: genre });
-  return Book.paginate({ genres: { $in: [genreInfo.id] } }, options);
+  const newFilter = { ...filter, genres: { $in: [genreInfo.id] } };
+  return Book.paginate(newFilter, options);
 };
 
 /**

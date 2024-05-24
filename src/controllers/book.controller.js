@@ -128,18 +128,23 @@ const downloadBook = catchAsync(async (req, res) => {
 
 const getBooksWithGenres = catchAsync(async (req, res) => {
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
+  const filter = {};
   if (req.query.fromPrice || req.query.toPrice) {
-    options.price = {};
+    filter.price = {};
 
     if (req.query.fromPrice) {
-      options.price.$gte = req.query.fromPrice;
+      filter.price.$gte = req.query.fromPrice;
     }
 
     if (req.query.toPrice) {
-      options.price.$lte = req.query.toPrice;
+      filter.price.$lte = req.query.toPrice;
     }
   }
-  const books = await bookService.getBooksWithGenres(req.params.genre, options);
+
+  if (req.query.language) {
+    filter.language = req.query.language;
+  }
+  const books = await bookService.getBooksWithGenres(req.params.genre, filter, options);
   res.status(httpStatus.OK).json({
     status: 'success',
     data: { books },
