@@ -34,13 +34,13 @@ router.delete('/delete-me', auth(), userController.deleteMe);
 
 router
   .route('/')
-  .post(auth('admin'), validate(userValidation.createUser), userController.createUser)
+  .post(auth('admin'), uploadUserPhoto, resizeUserPhoto, validate(userValidation.createUser), userController.createUser)
   .get(auth('admin'), validate(userValidation.getUsers), userController.getUsers);
 
 router
   .route('/:userId')
   .get(auth('admin'), validate(userValidation.getUser), userController.getUser)
-  .patch(auth('admin'), validate(userValidation.updateUser), userController.updateUser)
+  .patch(auth('admin'), uploadUserPhoto, resizeUserPhoto, validate(userValidation.updateUser), userController.updateUser)
   .delete(auth('admin'), validate(userValidation.deleteUser), userController.deleteUser);
 
 module.exports = router;

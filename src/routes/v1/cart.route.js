@@ -3,12 +3,13 @@ const auth = require('../../middlewares/auth.middleware');
 const validate = require('../../middlewares/validate.middleware');
 const { cartValidation } = require('../../validations');
 const { cartController } = require('../../controllers');
+const { checkAccessRightBook } = require('../../middlewares/book.middleware');
 
 const router = express.Router({ mergeParams: true });
 
 router
   .route('/')
-  .post(auth(), validate(cartValidation.createCart), cartController.createCart)
+  .post(auth(), checkAccessRightBook, validate(cartValidation.createCart), cartController.createCart)
   .get(auth(), validate(cartValidation.getCarts), cartController.getCarts);
 
 router

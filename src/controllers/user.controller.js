@@ -23,6 +23,7 @@ const configFilter = ({ role = '', name = '', email = '' }) => {
 };
 
 const createUser = catchAsync(async (req, res) => {
+  console.log({ body: req.body });
   const user = await userService.createUser(req.body);
   res.status(httpStatus.CREATED).json({
     status: 'success',

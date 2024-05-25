@@ -8,10 +8,11 @@ const configFilter = (filter) => {
   const { name = '', isActive = '' } = filter;
   const adjustedFilter = {};
   if (name) {
-    adjustedFilter.$text = { $search: name.trim() };
+    adjustedFilter.name = new RegExp(name, 'i');
   }
   if (isActive !== '') {
-    adjustedFilter.isActive = Boolean(isActive);
+    adjustedFilter.$and = [{ isActive }];
+    adjustedFilter.$and.$or = [{ due_date: null }, { due_date: { $gt: new Date() } }];
   }
 
   return adjustedFilter;
@@ -26,11 +27,8 @@ const createBanner = catchAsync(async (req, res) => {
 });
 
 const getBanners = catchAsync(async (req, res) => {
-  const originalFilter = pick(req.query, ['name', 'isActive']);
+  const originalFilter = pick(req.query, ['name']);
   const filter = configFilter(originalFilter);
-  if (req.query.isShow) {
-    filter.$or = [{ due_date: null }, { due_date: { $gt: new Date() } }];
-  }
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await bannerService.getBanners(filter, options);
   res.status(httpStatus.OK).json({

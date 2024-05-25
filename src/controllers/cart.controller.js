@@ -1,10 +1,13 @@
 const httpStatus = require('http-status');
-// const ApiError = require('../utils/ApiError');
+const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { cartService } = require('../services');
 
 const createCart = catchAsync(async (req, res) => {
   if (!req.body.book_id) req.body.book_id = req.params.book_id;
+  if (req.access_book.status && req.access_book.status === 'download') {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Bạn đã mua sách này vĩnh viễn!');
+  }
   await cartService.addToCart(req.body, req.user._id);
   res.status(httpStatus.CREATED).json({
     status: 'success',

@@ -83,8 +83,12 @@ const updateBookById = async (req, bookId, updateBody) => {
     throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
   }
 
-  if (updateBody.isbn && updateBody.isbn !== book.isbn && (await Book.isISBNTaken(updateBody.isbn))) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'ISBN đã tồn tại');
+  console.log({ book, isbn: updateBody.isbn });
+
+  if (updateBody.isbn && updateBody.isbn !== book.isbn) {
+    if (await Book.isISBNTaken(updateBody.isbn)) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'ISBN đã tồn tại');
+    }
   }
 
   Object.assign(book, updateBody);

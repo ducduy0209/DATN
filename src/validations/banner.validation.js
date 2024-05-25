@@ -6,6 +6,7 @@ const createBanner = {
     name: Joi.string().required(),
     image: Joi.string().required(),
     due_date: Joi.string(),
+    isActive: Joi.boolean(),
   }),
 };
 
