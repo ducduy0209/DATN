@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  node-app:
+    build: .
+    image: node-app
+    environment:
+      - MONGODB_URL=mongodb://mongodb:27017/library-system
+      - REDIS_URL=redis://redis:6379
+    ports:
+      - '3000:3000'
+    depends_on:
+      - mongodb
+      - redis
+    volumes:
+      - .:/usr/src/node-app
+    networks:
+      - node-network
+
+  mongodb:
+    image: mongo:4.2.1-bionic
+    ports:
+      - '27017:27017'
+    volumes:
+      - dbdata:/data/db
+    networks:
+      - node-network
+
+  redis:
+    image: redis:latest
+    ports:
+      - '6379:6379'
+    volumes:
+      - redisdata:/data
+    networks:
+      - node-network
+
+volumes:
+  dbdata:
+  redisdata:
+  esdata:
+
+networks:
+  node-network:
+    driver: bridge
