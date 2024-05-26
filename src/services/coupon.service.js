@@ -72,7 +72,7 @@ const deleteCoupon = async (couponId) => {
 
 const applyCoupon = async (userId, { price, code }) => {
   const coupon = await Coupon.findOne({ code });
-  if (!coupon) throw new ApiError(httpStatus.NOT_FOUND, 'Mã giảm giá không tồn tại');
+  if (!coupon || !coupon.isActive) throw new ApiError(httpStatus.NOT_FOUND, 'Mã giảm giá không tồn tại');
   if (coupon.expiredAt && coupon.expiredAt < new Date())
     throw new ApiError(httpStatus.BAD_REQUEST, 'Mã giảm giá đã hết hạn');
   if (price < coupon.minimum_value)

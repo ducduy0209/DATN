@@ -9,8 +9,9 @@ const createCoupon = {
     quantity: Joi.number().required(),
     minimum_value: Joi.number().required(),
     isPublic: Joi.boolean(),
+    isActive: Joi.boolean(),
     maxPerPerson: Joi.number(),
-    expiredAt: Joi.date(),
+    expiredAt: Joi.string().allow(null).empty([null, '', 'null']),
   }),
 };
 
@@ -40,7 +41,7 @@ const updateCoupon = {
     isPublic: Joi.boolean(),
     isActive: Joi.boolean(),
     maxPerPerson: Joi.number(),
-    expiredAt: Joi.date(),
+    expiredAt: Joi.string().allow(null).empty([null, '', 'null']),
   }),
   params: Joi.object().keys({
     couponId: Joi.string().custom(objectId),

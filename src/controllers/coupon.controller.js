@@ -14,6 +14,9 @@ const createCoupon = catchAsync(async (req, res) => {
 
 const getCoupons = catchAsync(async (req, res) => {
   const filter = pick(req.query, ['isActive', 'code']);
+  if (filter.code) {
+    filter.code = new RegExp(filter.code, 'i');
+  }
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const results = await couponService.getCoupons(filter, options);
   res.status(httpStatus.OK).json({

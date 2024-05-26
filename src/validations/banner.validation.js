@@ -5,7 +5,7 @@ const createBanner = {
   body: Joi.object().keys({
     name: Joi.string().required(),
     image: Joi.string().required(),
-    due_date: Joi.string(),
+    due_date: Joi.string().allow(null).empty([null, '', 'null']),
     isActive: Joi.boolean(),
   }),
 };
@@ -32,7 +32,7 @@ const updateBanner = {
     name: Joi.string(),
     image: Joi.string(),
     isActive: Joi.boolean(),
-    due_date: Joi.string(),
+    due_date: Joi.string().allow(null).empty([null, '', 'null']),
   }),
   params: Joi.object().keys({
     bannerId: Joi.string().custom(objectId),
