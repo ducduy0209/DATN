@@ -26,7 +26,7 @@ const resizeBannerPhoto = catchAsync(async (req, res, next) => {
 
   req.file.filename = `banner-${shortid.generate()}-${Date.now()}.jpeg`;
   const fullPath = path.join(__dirname, '../', 'public', 'img', 'banners', req.file.filename);
-  await sharp(req.file.buffer).resize(500, 420).toFormat('jpeg').jpeg({ quality: 95 }).toFile(fullPath);
+  await sharp(req.file.buffer).resize(920, 420).toFormat('jpeg').jpeg({ quality: 100 }).toFile(fullPath);
 
   req.body.image = req.file.filename;
   next();

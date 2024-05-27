@@ -34,6 +34,9 @@ reviewSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'user_id',
     select: 'name image',
+  }).populate({
+    path: 'book_id',
+    select: 'title slug',
   });
 
   next();
