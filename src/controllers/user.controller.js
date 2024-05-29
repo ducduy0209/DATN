@@ -3,6 +3,7 @@ const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { userService, tokenService } = require('../services');
+const { affiliateJob } = require('../jobs');
 
 const configFilter = ({ role = '', name = '', email = '' }) => {
   const filter = {};
@@ -25,6 +26,7 @@ const configFilter = ({ role = '', name = '', email = '' }) => {
 const createUser = catchAsync(async (req, res) => {
   console.log({ body: req.body });
   const user = await userService.createUser(req.body);
+  affiliateJob.create('create-affiliate-table', { user }).save();
   res.status(httpStatus.CREATED).json({
     status: 'success',
     data: { user },

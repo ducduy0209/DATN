@@ -121,6 +121,8 @@ const deleteBookById = async (id) => {
  */
 const createCheckoutBooks = async (res, booksDetails, userId) => {
   let totalAmount = 0;
+  let totalAmountAfterSale = 0;
+  let discount = '0.00';
   const items = await Promise.all(
     booksDetails.map(async ({ bookId, duration, price, referCode = '', couponCode = '' }) => {
       const book = await Book.findOne({ _id: bookId });
@@ -131,15 +133,24 @@ const createCheckoutBooks = async (res, booksDetails, userId) => {
       if (couponCode) {
         const coupon = await Coupon.findOne({ code: couponCode });
         if (coupon) {
-          totalAmount += price - (price * coupon.percent) / 100;
+          discount = (price * coupon.percent) / 100;
+          totalAmountAfterSale += price - discount;
+        } else {
+          totalAmountAfterSale += price;
         }
       } else {
-        totalAmount += price;
+        totalAmountAfterSale += price;
+      }
+
+      totalAmount += price;
+
+      if (typeof referCode !== 'string') {
+        referCode = '';
       }
 
       return {
-        name: book.title,
-        sku: `${bookId}_${duration}_${referCode}_${couponCode}`,
+        name: bookId,
+        sku: `${duration}_${referCode}_${couponCode}`,
         price: price.toFixed(2),
         currency: 'USD',
         quantity: 1,
@@ -163,7 +174,11 @@ const createCheckoutBooks = async (res, booksDetails, userId) => {
         },
         amount: {
           currency: 'USD',
-          total: totalAmount.toFixed(2),
+          total: totalAmountAfterSale.toFixed(2),
+          details: {
+            subtotal: totalAmount.toFixed(2),
+            discount: +discount > 0 ? discount.toFixed(2) : '0.00',
+          },
         },
         description: 'Make payment to experience extremely interesting and valuable books. Thank you!',
       },
@@ -177,7 +192,7 @@ const createCheckoutBooks = async (res, booksDetails, userId) => {
           logger.error(error);
           reject(error.toString());
         } else {
-          // console.log(payment);
+          // console.log({ payment });
           const data = payment.links.find((item) => item.rel === 'approval_url');
           if (data) {
             // console.log(data);
@@ -213,30 +228,30 @@ const confirmCheckoutBooks = async (paymentId, PayerID, userId) => {
     } else if (payment.state === 'approved') {
       const promises = payment.transactions[0].item_list.items.map((book) => {
         const splitSku = book.sku.split('_');
-        if (splitSku[2] !== '') {
+        if (splitSku[1] !== '') {
           affiliateJob
             .create('create-commission-affiliate', {
-              book_id: splitSku[0],
+              book_id: book.name,
               price: book.price,
-              refer_code: splitSku[2],
-              duration: splitSku[1],
+              refer_code: splitSku[1],
+              duration: splitSku[0],
             })
             .save();
         }
-        if (splitSku[3] !== '') {
+        if (splitSku[2] !== '') {
           couponJob
             .create('add-coupon-usage', {
-              code: splitSku[3],
+              code: splitSku[2],
               userId,
             })
             .save();
         }
-        cartJob.create('check-cart-to-delete', { book_id: splitSku[0], user_id: userId }).save();
+        cartJob.create('check-cart-to-delete', { book_id: book.name, user_id: userId }).save();
         return createRecord({
-          book_id: splitSku[0],
+          book_id: book.name,
           user_id: userId,
           price: book.price,
-          duration: splitSku[1],
+          duration: splitSku[0],
           payBy: 'paypal',
         });
       });

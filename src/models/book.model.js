@@ -9,7 +9,7 @@ const bookSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      index: 'text',
+      index: true,
     },
     slug: {
       type: String,
@@ -18,7 +18,7 @@ const bookSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      index: 'text',
+      index: true,
     },
     published_date: {
       type: Date,
@@ -73,7 +73,7 @@ const bookSchema = new mongoose.Schema(
         },
       },
     ],
-    languange: {
+    language: {
       type: String,
       default: 'en',
       enum: ['en', 'vi'],
