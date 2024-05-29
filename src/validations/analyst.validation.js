@@ -3,7 +3,9 @@ const Joi = require('joi');
 
 const getAnalysts = {
   query: Joi.object().keys({
-    time: Joi.string().required(),
+    time: Joi.string(),
+    from: Joi.string(),
+    to: Joi.string(),
   }),
 };
 

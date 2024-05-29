@@ -52,8 +52,31 @@ const formatQueryTime = (time) => {
   return filter;
 };
 
-const getAnalysts = async (time = 'today') => {
-  const filter = formatQueryTime(time);
+const getAnalysts = async (filters) => {
+  console.log({ filters });
+  let filter = {};
+  if (filters.time) {
+    filter = formatQueryTime(filters.time);
+  }
+
+  if (filters.from && filters.to) {
+    filter.createdAt = {
+      $gte: moment(filters.from).startOf('day').toDate(),
+      $lte: moment(filters.to).endOf('day').toDate(),
+    };
+  } else {
+    if (filters.from) {
+      filter.createdAt = {
+        $gte: moment(filters.from).startOf('day').toDate(),
+      };
+    }
+
+    if (filters.to) {
+      filter.createdAt = {
+        $lte: moment(filters.to).endOf('day').toDate(),
+      };
+    }
+  }
   const [recordHistory, userAnalyst] = await Promise.all([Analyst.find(filter), User.count(filter)]);
 
   let totalRevenue = 0;

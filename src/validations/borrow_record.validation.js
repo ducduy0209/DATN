@@ -6,6 +6,8 @@ const getAllRecords = {
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
+    from: Joi.string(),
+    to: Joi.string(),
   }),
   params: Joi.object().keys({
     book_id: Joi.string().custom(objectId),
