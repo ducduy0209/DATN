@@ -9,6 +9,15 @@ const getAnalysts = {
   }),
 };
 
+const exportsAnalysts = {
+  body: Joi.object().keys({
+    issuer: Joi.string(),
+    from: Joi.string(),
+    to: Joi.string(),
+  }),
+};
+
 module.exports = {
   getAnalysts,
+  exportsAnalysts,
 };

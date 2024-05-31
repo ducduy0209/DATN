@@ -53,7 +53,6 @@ const formatQueryTime = (time) => {
 };
 
 const getAnalysts = async (filters) => {
-  console.log({ filters });
   let filter = {};
   if (filters.time) {
     filter = formatQueryTime(filters.time);
@@ -170,8 +169,15 @@ const getTopBadBooks = async () => {
   return mappedBooks;
 };
 
+const exportsAnalysts = async (filters) => {
+  const statistics = await getAnalysts(filters);
+
+  return statistics;
+};
+
 module.exports = {
   getAnalysts,
   getTopSellerBooks,
   getTopBadBooks,
+  exportsAnalysts,
 };

@@ -6,6 +6,12 @@ const { analystController } = require('../../controllers');
 
 const router = express.Router();
 
+router.post(
+  '/exports-analysts',
+  auth('admin'),
+  validate(analystValidation.exportsAnalysts),
+  analystController.exportsAnalysts
+);
 router.get('/', auth('admin'), validate(analystValidation.getAnalysts), analystController.getAnalysts);
 router.get('/top-seller-books', auth('admin'), analystController.getTopSellerBooks);
 router.get('/top-bad-books', auth('admin'), analystController.getTopBadBooks);
