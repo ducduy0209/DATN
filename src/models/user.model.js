@@ -40,7 +40,6 @@ const userSchema = mongoose.Schema(
     },
     my_refer_code: {
       type: String,
-      default: shortid.generate(),
     },
     isActive: {
       type: Boolean,
@@ -98,6 +97,7 @@ userSchema.methods.isPasswordMatch = async function (password) {
 
 userSchema.pre('save', async function (next) {
   const user = this;
+  this.my_refer_code = shortid.generate();
   if (user.isModified('password')) {
     user.password = await bcrypt.hash(user.password, 8);
   }

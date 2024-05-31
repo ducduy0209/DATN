@@ -76,7 +76,7 @@ const applyCoupon = async (userId, { price, code }) => {
   if (coupon.expiredAt && coupon.expiredAt < new Date())
     throw new ApiError(httpStatus.BAD_REQUEST, 'Mã giảm giá đã hết hạn');
   if (price < coupon.minimum_value)
-    throw new ApiError(httpStatus.BAD_REQUEST, `Giá tiền phải lớn hơn ${coupon.minimum_value}`);
+    throw new ApiError(httpStatus.BAD_REQUEST, `Giá tiền phải lớn hơn $${coupon.minimum_value}`);
   if (coupon.remaining_amount < 1) throw new ApiError(httpStatus.BAD_REQUEST, 'Mã giảm giá đã hết số lượng sử dụng');
   const usage = await CouponUsage.findOne({ code, userId });
   if (usage && usage.numberOfUses >= coupon.maxPerPerson)
