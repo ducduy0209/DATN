@@ -40,7 +40,7 @@ const exportsAnalysts = catchAsync(async (req, res) => {
   const issueTime = moment().format('DD/MM/YYYY HH:mm');
 
   const doc = new PDFDocument({ margin: 50 });
-  const fileName = `Thong_ke_bao_cao_${issuer}_ngay_${issueDate}.pdf`;
+  const fileName = `Thong_ke_bao_cao_ngay_${issueDate}.pdf`;
 
   res.setHeader('Content-Type', 'application/pdf');
   res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);

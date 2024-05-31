@@ -272,7 +272,7 @@ const getPreviewBook = async (bookId) => {
   const pdfDoc = await PDFDocument.load(originalPdfBytes, { ignoreEncryption: true });
 
   const newPdfDoc = await PDFDocument.create();
-  const pageCount = Math.min(4, pdfDoc.getPageCount());
+  const pageCount = Math.min(8, pdfDoc.getPageCount());
 
   for (let i = 0; i < pageCount; i += 1) {
     // eslint-disable-next-line no-await-in-loop
